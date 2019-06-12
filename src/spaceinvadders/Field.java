@@ -1,6 +1,7 @@
+package spaceinvadders;
+
 import org.academiadecodigo.simplegraphics.graphics.Color;
 import org.academiadecodigo.simplegraphics.graphics.Rectangle;
-import org.academiadecodigo.simplegraphics.graphics.Text;
 import org.academiadecodigo.simplegraphics.keyboard.Keyboard;
 import org.academiadecodigo.simplegraphics.keyboard.KeyboardEvent;
 import org.academiadecodigo.simplegraphics.keyboard.KeyboardEventType;
@@ -9,6 +10,7 @@ import org.academiadecodigo.simplegraphics.keyboard.KeyboardHandler;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.File;
+import java.util.ArrayList;
 
 
 public class Field implements KeyboardHandler {
@@ -20,18 +22,19 @@ public class Field implements KeyboardHandler {
 
     private static final int MOVE_UNIT = 20;
     private int score;
-    private Alien[] aliens;
+    private Character[] gameObjects;
+    private ArrayList<Alien> aliens;
+    private ArrayList<ProtectionBlock> blocks;
     private Keyboard keyboard;
-    private Player player;
+    private SpaceShip spaceShip;
     private Rectangle gameCanvas;
-
-    private Text gameover = new Text(250, 250, " YOUUUUUU LOOOOOOOOSSSSSSEEEE");
-
+    private ArrayList<Boss> boss = null;
+    Boss b;
 
     public Field(int delay) {
+        play("/Users/albertoreis/dev/spaceinvadersgroup/resources/8bit_Trisco.wav");
 
-        play("/Users/albertoreis/Downloads/academiaProject/resources/8bit_Trisco.wav");
-        //Creates a field where the player and aliens will be displayed
+        //Creates a field where the spaceShip and gameObjects will be displayed
         gameCanvas = new Rectangle(PADDING, PADDING, WIDTH, HEIGHT);
         gameCanvas.setColor(Color.BLACK);
         gameCanvas.fill();
@@ -40,31 +43,36 @@ public class Field implements KeyboardHandler {
     }
 
     public void init() {
-        player = new Player(WIDTH / 2, HEIGHT - 20, 40);
 
-        while(player.getPlayerLevel() != 3) {
+        gameObjects = GameObjectsFactory.createCharacters(GameLevel.ROOKIE);
 
-            if (player.getPlayerLevel() == 0) {
-                Alien[] aliens = createHordeOfAliens(2, 15);
-                //Move all aliens if they aren't dead
-                moveAliens(aliens);
+        spaceShip = (SpaceShip) gameObjects[gameObjects.length - 1];
+
+        b = (Boss) gameObjects[gameObjects.length-2];
+        for (Character a : gameObjects) {
+            if (a instanceof Boss) {
+                //   boss.add((Boss) a);
             }
-
-            if (player.getPlayerLevel() == 1) {
-                Alien[] aliens = createHordeOfAliens(2, 20);
-                //Move all aliens if they aren't dead
-                moveAliens(aliens);
-            }
-            if(player.getPlayerLevel() == 2){
-                Boss boss = new Boss((WIDTH/2)- 40,PADDING*2,2);
-
-            }
-
         }
+
+        Thread t1 = new Thread(new Runnable() {
+            public void run() {
+                while (true) {
+
+
+                }
+            }
+        });
+        t1.start();
     }
 
-
     //PLAYSOUNDS
+
+    /**
+     * Method that uses javax.sound to stream audio and java.io to read from a file
+     *
+     * @param filename
+     */
     public static void play(String filename) {
         try {
             Clip clip = AudioSystem.getClip();
@@ -73,30 +81,6 @@ public class Field implements KeyboardHandler {
         } catch (Exception exc) {
             exc.printStackTrace(System.out);
         }
-    }
-
-    /**
-     * Creates a bunch of aliens
-     */
-
-    public Alien[] createHordeOfAliens(int speed, int hordeSize) {
-
-        aliens = new Alien[hordeSize];
-
-        int positionX = WIDTH / 3;
-        int positionY = PADDING *2;
-
-        for (int i = 0; i < aliens.length; i++) {
-
-            aliens[i] = new Alien(positionX, positionY, speed);
-            positionX += 70;
-            if (i == 4 || i == 9 || i == 14) { //5 by 5
-                positionX = WIDTH / 3;
-                positionY = positionY + 50;
-            }
-        }
-
-        return aliens;
     }
 
 
@@ -132,11 +116,10 @@ public class Field implements KeyboardHandler {
     }
 
     public void moveAliens(Alien[] aliens) {
-        //Enquanto o ultimo alien do array nao chegar à border
 
-        while (aliens[aliens.length - 1].representation.getY() <= HEIGHT * .8) {
+        while (aliens[14].getY() <= HEIGHT * .8) {
 
-            while (updateAlienReferenceRight(aliens).representation.getX() + aliens[0].representation.getWidth() < WIDTH - PADDING) {
+            while (updateAlienReferenceRight(aliens).getX() + aliens[0].getWidth() < WIDTH - PADDING) {
                 try {
                     Thread.sleep(DELAY);
                 } catch (InterruptedException e) {
@@ -147,9 +130,9 @@ public class Field implements KeyboardHandler {
                 }
             }
             for (Alien a : aliens) {
-                a.moveDown();
+                //a.moveDown();
             }
-            while (updateAlienReferenceLeft(aliens).representation.getX() > PADDING + aliens[0].representation.getWidth()) {
+            while (updateAlienReferenceLeft(aliens).getX() > PADDING + aliens[0].getWidth()) {
                 try {
                     Thread.sleep(DELAY);
                 } catch (InterruptedException e) {
@@ -201,25 +184,20 @@ public class Field implements KeyboardHandler {
 
     @Override
     public void keyPressed(KeyboardEvent keyboardEvent) {
-        if ((keyboardEvent.getKey() == keyboardEvent.KEY_RIGHT)
-                && player.ship.getX() + player.ship.getWidth() < WIDTH) {
-            player.moveRight();
+        if (keyboardEvent.getKey() == keyboardEvent.KEY_RIGHT) {
+            spaceShip.moveRight();
         }
-        if (keyboardEvent.getKey() == keyboardEvent.KEY_LEFT && player.ship.getX() > 20) {
-            player.moveLeft();
-        }
-        if (keyboardEvent.getKey() == keyboardEvent.KEY_UP && player.ship.getY() + player.ship.getWidth() > 20) {
-            //player.ship.translate(0, -10);
-
-        }
-        if (keyboardEvent.getKey() == keyboardEvent.KEY_DOWN && player.ship.getY() < HEIGHT) {
-            //player.ship.translate(0, 10);
+        if (keyboardEvent.getKey() == keyboardEvent.KEY_LEFT) {
+            spaceShip.moveLeft();
         }
         if (keyboardEvent.getKey() == keyboardEvent.KEY_SPACE) {
-            play("/Users/albertoreis/Downloads/academiaProject/resources/bulletsound.wav");
-            player.shoot();
-            player.hitChecker(aliens);
+            play("/Users/albertoreis/dev/spaceinvadersgroup/resources/zap.wav");
+            spaceShip.shoot();
         }
+        if (keyboardEvent.getKey() == keyboardEvent.KEY_DOWN) {
+            b.shoot();
+        }
+
     }
 
     @Override
