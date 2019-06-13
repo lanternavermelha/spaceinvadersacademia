@@ -53,7 +53,7 @@ public class Field implements KeyboardHandler {
 
     public void init() {
 
-        gameObjects = GameObjectsFactory.createCharacters(GameLevel.PRO);
+        gameObjects = GameObjectsFactory.createCharacters(GameLevel.INSANE);
 
         spaceShip = (SpaceShip) gameObjects[gameObjects.length - 1];
 
