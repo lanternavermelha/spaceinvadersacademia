@@ -6,11 +6,13 @@ import org.academiadecodigo.simplegraphics.keyboard.Keyboard;
 import org.academiadecodigo.simplegraphics.keyboard.KeyboardEvent;
 import org.academiadecodigo.simplegraphics.keyboard.KeyboardEventType;
 import org.academiadecodigo.simplegraphics.keyboard.KeyboardHandler;
+import org.academiadecodigo.simplegraphics.pictures.Picture;
 
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class Field implements KeyboardHandler {
@@ -28,32 +30,41 @@ public class Field implements KeyboardHandler {
     private Keyboard keyboard;
     private SpaceShip spaceShip;
     private Rectangle gameCanvas;
+    private Picture spaceCanvas;
     private ArrayList<Boss> boss = null;
-    Boss b;
+    private Boss b;
+    private Alien[] ali;
 
     public Field(int delay) {
         play("/Users/albertoreis/dev/spaceinvadersgroup/resources/8bit_Trisco.wav");
-
-        //Creates a field where the spaceShip and gameObjects will be displayed
-        gameCanvas = new Rectangle(PADDING, PADDING, WIDTH, HEIGHT);
-        gameCanvas.setColor(Color.BLACK);
-        gameCanvas.fill();
+        createCanvas();
         this.DELAY = delay;
         keyboardInit();
     }
 
+    //maybe a class latter
+    public void createCanvas() {
+        spaceCanvas = new Picture(PADDING, PADDING, "/Users/albertoreis/dev/spaceinvadersgroup/resources/spacecanvas.png");
+        spaceCanvas.draw();
+        //gameCanvas = new Rectangle(PADDING, PADDING, WIDTH, HEIGHT);
+        //gameCanvas.setColor(Color.BLACK);
+        //gameCanvas.fill();
+    }
+
     public void init() {
 
-        gameObjects = GameObjectsFactory.createCharacters(GameLevel.ROOKIE);
+        gameObjects = GameObjectsFactory.createCharacters(GameLevel.PRO);
 
         spaceShip = (SpaceShip) gameObjects[gameObjects.length - 1];
 
-        b = (Boss) gameObjects[gameObjects.length-2];
+        b = (Boss) gameObjects[gameObjects.length - 2];
+
         for (Character a : gameObjects) {
-            if (a instanceof Boss) {
-                //   boss.add((Boss) a);
+            if (a instanceof Alien) {
+                System.out.println(a);
             }
         }
+        System.out.println(Arrays.toString(ali));
 
         Thread t1 = new Thread(new Runnable() {
             public void run() {

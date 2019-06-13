@@ -2,27 +2,36 @@ package spaceinvadders;
 
 import org.academiadecodigo.simplegraphics.graphics.Color;
 import org.academiadecodigo.simplegraphics.graphics.Rectangle;
+import org.academiadecodigo.simplegraphics.pictures.Picture;
 
 import java.io.File;
 
 public class Bullet {
 
-    Rectangle representation;
+    //Rectangle representation;
+    Picture representation;
 
     public Bullet(Character character) {
-        representation = new Rectangle(character.getX() + (character.getWidth() / 2), character.getY()-character.getHeight()/2, 3, 8);
+        if (character instanceof SpaceShip){
+            representation = new Picture(character.getX() + (character.getWidth() / 2), character.getY()-character.getHeight()/2,"/Users/albertoreis/dev/spaceinvadersgroup/resources/projectile.png");
+        }
+        if (character instanceof Boss){
+            representation = new Picture(character.getX() + (character.getWidth() / 2), character.getY()+character.getHeight(),"/Users/albertoreis/dev/spaceinvadersgroup/resources/bossprojectile.png");
+        }
+        //representation = new Rectangle(character.getX() + (character.getWidth() / 2), character.getY()-character.getHeight()/2, 3, 8);
     }
 
     public void shootUpwards() {
-        representation.setColor(Color.YELLOW);
-        representation.fill();
+        representation.draw();
+        //representation.setColor(Color.YELLOW);
+        //representation.fill();
 
 
         Thread t1 = new Thread(new Runnable() {
             public void run() {
                 while (representation.getY()> Field.getPADDING()) {
                     try {
-                        Thread.sleep(5);
+                        Thread.sleep(2);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
@@ -37,8 +46,10 @@ public class Bullet {
         t1.start();
     }
     public void shootDownwards() {
-        representation.setColor(Color.YELLOW);
-        representation.fill();
+        representation.draw();
+
+        //representation.setColor(Color.YELLOW);
+        //representation.fill();
 
         Thread t1 = new Thread(new Runnable() {
             public void run() {

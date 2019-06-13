@@ -28,7 +28,7 @@ public abstract class GameObjectsFactory {
     /**
      * Method to create Rookie Level GameObjects:
      *
-     * 15 Aliens / 5 Protection Blocs / 1 spaceinvadders.Boss / 1 Spaceship
+     * 15 Aliens / 5 Protection Blocs / 1 Boss / 1 Spaceship
      *
      * @return spaceinvadders.Character[]
      */
@@ -62,9 +62,8 @@ public abstract class GameObjectsFactory {
                     AlienStartY = AlienStartY + 50; //WHY 50?
                 }
             }
-
             //Obstacle Creation
-            if (i > numOfAliens - 1 && i < numOfBricks + numOfAliens) {
+            if (i >= numOfAliens && i < numOfBricks + numOfAliens) {
                 characters[i] = new ProtectionBlock(blocksGap, 0, 0);
                 blocksGap += 150;//to be improved
             }
@@ -81,7 +80,7 @@ public abstract class GameObjectsFactory {
     /**
      * Method to create Intermediate Level GameObjects:
      *
-     * 20 Aliens / 4 Protection Blocs / 1 spaceinvadders.Boss / 1 Spaceship
+     * 20 Aliens / 4 Protection Blocs / 1 Boss / 1 Spaceship
      *
      * @return spaceinvadders.Character[]
      */
@@ -108,7 +107,8 @@ public abstract class GameObjectsFactory {
         for (int i = 0; i < characters.length; i++) {
             if (i < numOfAliens) {
                 characters[i] = new Alien(alienStartX, AlienStartY, alienSpeed);
-                alienStartX += 70;//WHY 70 ? -- can we get it from a variable/constant?
+                alienStartX += 70;
+                //WHY 70 ? -- can we get it from a variable/constant?
                 if (i == 4 || i == 9||i==14) {
                     alienStartX = Field.getWIDTH() / 3;
                     AlienStartY = AlienStartY + 50; //WHY 50?
@@ -116,7 +116,7 @@ public abstract class GameObjectsFactory {
             }
 
             //Obstacle Creation
-            if (i > numOfAliens - 1 && i < numOfBricks + numOfAliens) {
+            if (i >= numOfAliens && i < numOfBricks + numOfAliens) {
                 characters[i] = new ProtectionBlock(blocksGap, 0, 0);
                 blocksGap += 150;//to be improved
             }

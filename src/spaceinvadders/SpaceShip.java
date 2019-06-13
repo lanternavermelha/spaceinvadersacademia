@@ -130,6 +130,6 @@ public class SpaceShip extends Character {
 
     @Override
     public String toString() {
-        return "spaceinvadders.SpaceShip";
+        return "SpaceShip";
     }
 }

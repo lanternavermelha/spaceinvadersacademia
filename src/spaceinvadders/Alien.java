@@ -10,8 +10,6 @@ public class Alien extends Character {
     private Picture representation;
 
 
-
-
     @Override
     public int getSpeed() {
         return speed;
@@ -78,7 +76,7 @@ public class Alien extends Character {
 
     @Override
     public String toString() {
-        return "spaceinvadders.Alien";
+        return "Alien";
     }
 }
 

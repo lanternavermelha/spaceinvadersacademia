@@ -80,28 +80,28 @@ public class Boss extends Character {
 
     public void move() {
         while (getX() > Field.getPADDING()) {
+            representation.translate(-5, 0);
+
             try {
-                Thread.sleep(100);
+                Thread.sleep(20);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
-            representation.translate(-5, 0);
         }
 
         while (getX() < Field.getWIDTH() - Field.getPADDING() - getWidth()) {
-
+            representation.translate(+5, 0);
             try {
-                Thread.sleep(100);
+                Thread.sleep(20);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
-            representation.translate(+5, 0);
         }
     }
 
 
     @Override
     public String toString() {
-        return "spaceinvadders.Boss";
+        return "Boss";
     }
 }
