@@ -34,7 +34,7 @@ public class ProtectionBlock extends Character {
 
 
     @Override
-    public void shoot() {
+    public void shoot(Character[] characters) {
 //TODO this object does not shoot--must think a better way to not implement this
     }
 

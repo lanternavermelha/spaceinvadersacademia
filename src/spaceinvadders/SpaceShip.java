@@ -43,9 +43,9 @@ public class SpaceShip extends Character {
     }
 
     @Override
-    public void shoot() {
+    public void shoot(Character[] gameobjects) {
         Bullet bullet = new Bullet(this);
-        bullet.shootUpwards();
+        bullet.shootUpwards(gameobjects);
     }
 
 

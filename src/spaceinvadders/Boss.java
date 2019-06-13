@@ -20,15 +20,7 @@ public class Boss extends Character {
         if (ran >= .7) {
             representation = new Picture(600, 100, "Resources/super3.png");
         }
-        representation.draw();
-        Thread t1 = new Thread(new Runnable() {
-            public void run() {
-                while (true) {
-                    move();
-                }
-            }
-        });
-        t1.start();
+        beVisible();
     }
 
 
@@ -69,11 +61,19 @@ public class Boss extends Character {
 
     public void beVisible() {
         representation.draw();
+        Thread t1 = new Thread(new Runnable() {
+            public void run() {
+                while (true) {
+                    move();
+                }
+            }
+        });
+        t1.start();
         visible = true;
     }
 
     @Override
-    public void shoot() {
+    public void shoot(Character[] characters) {
         Bullet bullet = new Bullet(this);
         bullet.shootDownwards();
     }
@@ -81,14 +81,12 @@ public class Boss extends Character {
     public void move() {
         while (getX() > Field.getPADDING()) {
             representation.translate(-5, 0);
-
             try {
                 Thread.sleep(20);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         }
-
         while (getX() < Field.getWIDTH() - Field.getPADDING() - getWidth()) {
             representation.translate(+5, 0);
             try {

@@ -32,6 +32,17 @@ public class ClassTests {
 
 /* MULTITHREADING BULLETMOVE TEST
 
+Thread t1 = new Thread(new Runnable() {
+            public void run() {
+                while (true) {
+
+
+                }
+            }
+        });
+        t1.start();
+
+
 
         Rectangle background = new Rectangle(10,10,800,600);
         background.setColor(Color.BLUE);

@@ -34,26 +34,42 @@ public class Field implements KeyboardHandler {
     private ArrayList<Boss> boss = null;
     private Boss b;
     private Alien[] ali;
+    private GameLevel gameLevel;
 
-    public Field(int delay) {
-        play("/Users/albertoreis/dev/spaceinvadersgroup/resources/8bit_Trisco.wav");
-        createCanvas();
+    public Field(int delay, GameLevel gameLevel) {
         this.DELAY = delay;
-        keyboardInit();
+        this.gameLevel = gameLevel;
+
     }
 
     //maybe a class latter
     public void createCanvas() {
-        spaceCanvas = new Picture(PADDING, PADDING, "/Users/albertoreis/dev/spaceinvadersgroup/resources/spacecanvas.png");
+        switch (gameLevel) {
+            case ROOKIE:
+                spaceCanvas = new Picture(PADDING, PADDING, "/Users/albertoreis/dev/spaceinvadersgroup/resources/canvas/rookiecanvas.png");
+                break;
+            case INTERMEDIATE:
+                spaceCanvas = new Picture(PADDING, PADDING, "/Users/albertoreis/dev/spaceinvadersgroup/resources/canvas/intermediatecanvas.png");
+                break;
+            case PRO:
+                spaceCanvas = new Picture(PADDING, PADDING, "/Users/albertoreis/dev/spaceinvadersgroup/resources/canvas/procanvas.png");
+                break;
+            case INSANE:
+                spaceCanvas = new Picture(PADDING, PADDING, "/Users/albertoreis/dev/spaceinvadersgroup/resources/canvas/insanecanvas.png");
+                break;
+        }
         spaceCanvas.draw();
-        //gameCanvas = new Rectangle(PADDING, PADDING, WIDTH, HEIGHT);
-        //gameCanvas.setColor(Color.BLACK);
-        //gameCanvas.fill();
     }
 
     public void init() {
+        //Theme Music
+        play("/Users/albertoreis/dev/spaceinvadersgroup/resources/8bit_Trisco.wav");
 
-        gameObjects = GameObjectsFactory.createCharacters(GameLevel.INSANE);
+        createCanvas();
+
+        keyboardInit();
+
+        gameObjects = GameObjectsFactory.createCharacters(gameLevel);
 
         spaceShip = (SpaceShip) gameObjects[gameObjects.length - 1];
 
@@ -62,19 +78,9 @@ public class Field implements KeyboardHandler {
         for (Character a : gameObjects) {
             if (a instanceof Alien) {
                 System.out.println(a);
+                System.out.println(a.getX()+" "+a.getY());
             }
         }
-        System.out.println(Arrays.toString(ali));
-
-        Thread t1 = new Thread(new Runnable() {
-            public void run() {
-                while (true) {
-
-
-                }
-            }
-        });
-        t1.start();
     }
 
     //PLAYSOUNDS
@@ -203,10 +209,10 @@ public class Field implements KeyboardHandler {
         }
         if (keyboardEvent.getKey() == keyboardEvent.KEY_SPACE) {
             play("/Users/albertoreis/dev/spaceinvadersgroup/resources/zap.wav");
-            spaceShip.shoot();
+            spaceShip.shoot(gameObjects);
         }
         if (keyboardEvent.getKey() == keyboardEvent.KEY_DOWN) {
-            b.shoot();
+            b.shoot(gameObjects);
         }
 
     }

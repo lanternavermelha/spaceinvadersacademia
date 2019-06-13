@@ -19,6 +19,6 @@ public abstract class Character {
 
     public abstract int getSpeed();
 
-    public abstract void shoot();
+    public abstract void shoot(Character[] characters);
 
 }

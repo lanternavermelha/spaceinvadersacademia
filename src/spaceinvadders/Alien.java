@@ -16,7 +16,7 @@ public class Alien extends Character {
     }
 
     public Alien(int x, int y, int speed) {
-        this.speed=speed;
+        this.speed = speed;
         double ran = Math.random();
         if (ran < .4) {
             representation = new Picture(x, y, "Resources/invaderRed.png");
@@ -31,7 +31,7 @@ public class Alien extends Character {
     }
 
     @Override
-    public void shoot() {
+    public void shoot(Character[] caracters) {
         Bullet bullet = new Bullet(this);
         bullet.shootDownwards();
     }
@@ -63,7 +63,7 @@ public class Alien extends Character {
     }
 
     public int getY() {
-        return representation.getX();
+        return representation.getY();
     }
 
     public int getWidth() {
@@ -74,9 +74,10 @@ public class Alien extends Character {
         return representation.getHeight();
     }
 
+
     @Override
     public String toString() {
-        return "Alien";
+        return "Alien " + "X: " + getX() + " Y: " + getY();
     }
 }
 

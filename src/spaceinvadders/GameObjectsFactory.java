@@ -41,7 +41,7 @@ public abstract class GameObjectsFactory {
         int bossArrayPos = 20;
         int blocksGap = 50;//to be improved
         int alienSpeed = 5;
-        int spaceshipArrayPos =arraySize-1;
+        int spaceshipArrayPos = arraySize-1;
 
         Character[]characters = new Character[arraySize]; //spaceinvadders.Character array
 
@@ -55,6 +55,7 @@ public abstract class GameObjectsFactory {
 
         for (int i = 0; i < characters.length; i++) {
             if (i < numOfAliens) {
+                System.out.println("alien? "+i);
                 characters[i] = new Alien(alienStartX, AlienStartY, alienSpeed);
                 alienStartX += 70;//WHY 70 ? -- can we get it from a variable/constant?
                 if (i == 4 || i == 9) {
@@ -64,11 +65,13 @@ public abstract class GameObjectsFactory {
             }
             //Obstacle Creation
             if (i >= numOfAliens && i < numOfBricks + numOfAliens) {
+                System.out.println("block? "+i);
                 characters[i] = new ProtectionBlock(blocksGap, 0, 0);
                 blocksGap += 150;//to be improved
             }
             //spaceinvadders.Boss Creation
             if (i == bossArrayPos) {
+                System.out.println("boss? "+i);
                 characters[i] = new Boss(Field.getWIDTH() / 2, 100, 20);
             }
         }
@@ -105,7 +108,7 @@ public abstract class GameObjectsFactory {
         int alienStartX = Field.getWIDTH() / 3;
         int AlienStartY = 20;//this needs to be better
         for (int i = 0; i < characters.length; i++) {
-            if (i < numOfAliens) {
+            if (i <= numOfAliens) {
                 characters[i] = new Alien(alienStartX, AlienStartY, alienSpeed);
                 alienStartX += 70;
                 //WHY 70 ? -- can we get it from a variable/constant?
@@ -125,7 +128,6 @@ public abstract class GameObjectsFactory {
                 characters[i] = new Boss(Field.getWIDTH() / 2, 100, 20);
             }
         }
-
         System.out.println(Arrays.toString(characters));
         return characters;
     }
@@ -157,7 +159,7 @@ public abstract class GameObjectsFactory {
         int alienStartX = Field.getWIDTH() / 3;
         int AlienStartY = 20;//this needs to be better
         for (int i = 0; i < characters.length; i++) {
-            if (i < numOfAliens) {
+            if (i <= numOfAliens) {
                 characters[i] = new Alien(alienStartX, AlienStartY, alienSpeed);
                 alienStartX += 70;//WHY 70 ? -- can we get it from a variable/constant?
                 if (i == 4 || i == 9||i==14) {
@@ -209,7 +211,7 @@ public abstract class GameObjectsFactory {
         int AlienStartY = 20;//this needs to be better
 
         for (int i = 0; i < characters.length; i++) {
-            if (i < numOfAliens) {
+            if (i <= numOfAliens) {
                 characters[i] = new Alien(alienStartX, AlienStartY, alienSpeed);
                 alienStartX += 70;//WHY 70 ? -- can we get it from a variable/constant?
                 if (i == 4 || i == 9||i==14||i==19) {
