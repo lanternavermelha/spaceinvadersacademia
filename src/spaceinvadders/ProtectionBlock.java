@@ -2,52 +2,50 @@ package spaceinvadders;
 
 import org.academiadecodigo.simplegraphics.pictures.Picture;
 
-public class ProtectionBlock extends Character {
+public class ProtectionBlock implements Shootable {
     private int hitpoints;
-    Picture representation;
+    private Picture representation;
+    private boolean visible;
 
     //TODO -- y and speed are not needed in this class!
     public ProtectionBlock(int x, int y, int speed) {
         hitpoints = 300;
         representation = new Picture(x, 450, "/Users/albertoreis/dev/spaceinvadersgroup/resources/laserGreen.png");
         representation.draw();
+        visible=true;
     }
 
     public void hit() {
         hitpoints -= 50;
+        if (hitpoints==0){
+            kill();
+        }
 
         changeRepresentation();
+
     }
 
-    public void changeRepresentation() {
+    private void changeRepresentation() {
         if (hitpoints == 200) {
-            representation.delete();
-            representation = new Picture(getX(), 450, "/Users/albertoreis/dev/spaceinvadersgroup/resources/laserOrange.png");
-            representation.draw();
+            representation.load("/Users/albertoreis/dev/spaceinvadersgroup/resources/laserOrange.png");
         }
         if (hitpoints == 100) {
-            representation.delete();
-            representation = new Picture(getX(), 450, "/Users/albertoreis/dev/spaceinvadersgroup/resources/laserRed.png");
-            representation.draw();
+            representation.load("/Users/albertoreis/dev/spaceinvadersgroup/resources/laserRed.png");
         }
     }
 
 
     @Override
-    public void shoot(Character[] characters) {
-//TODO this object does not shoot--must think a better way to not implement this
-    }
+    public void shoot(Shootable[] shootables) { }
 
     @Override
     public int getSpeed() {
         return 0;
     }
 
-
-
     @Override
-    public boolean isDead() {
-        return hitpoints <= 0;
+    public boolean isVisible() {
+        return visible;
     }
 
     @Override
@@ -72,14 +70,12 @@ public class ProtectionBlock extends Character {
 
     @Override
     public void kill() {
-        //TODO -- kill it
+        visible = false;
         representation.delete();
     }
     @Override
     public String toString() {
         return "ProtectionBlock";
     }
-
-
 
 }

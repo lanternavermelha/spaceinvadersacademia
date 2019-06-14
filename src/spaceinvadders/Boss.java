@@ -2,14 +2,25 @@ package spaceinvadders;
 
 import org.academiadecodigo.simplegraphics.pictures.Picture;
 
-public class Boss extends Character {
-    private boolean dead;
+public class Boss implements Shootable {
+    private enum StartPos{
+        RIGHT,
+        LEFT,
+        Center
+    }
+
     private Picture representation;
-    private int health;
+    private int hitpoints;
     private boolean visible;
 
+    public void hit() {
+        Field.play("/Users/albertoreis/dev/spaceinvadersgroup/resources/explosion.wav");
+        hitpoints -= 50;
+    }
+
     public Boss(int x, int y, int speed) {//not doing shit with this values!!
-        health = 50;
+
+        hitpoints = 300;
         double ran = Math.random();
         if (ran < .4) {
             representation = new Picture(200, 100, "Resources/super.png");
@@ -25,17 +36,15 @@ public class Boss extends Character {
 
 
     public void kill() {
-        dead = true;
+        visible = false;
+        Explosion.explode(this);
+        Field.play("/Users/albertoreis/dev/spaceinvadersgroup/resources/explosion.wav");
         representation.delete();
     }
 
     @Override
     public int getSpeed() {
         return 0;
-    }
-
-    public boolean isDead() {
-        return dead;
     }
 
     @Override
@@ -58,7 +67,9 @@ public class Boss extends Character {
         return representation.getHeight();
     }
 
-
+    /**
+     * be visible starts the animation
+     */
     public void beVisible() {
         representation.draw();
         Thread t1 = new Thread(new Runnable() {
@@ -73,7 +84,7 @@ public class Boss extends Character {
     }
 
     @Override
-    public void shoot(Character[] characters) {
+    public void shoot(Shootable[] shootables) {
         Bullet bullet = new Bullet(this);
         bullet.shootDownwards();
     }
@@ -96,7 +107,10 @@ public class Boss extends Character {
             }
         }
     }
-
+    @Override
+    public boolean isVisible() {
+        return visible;
+    }
 
     @Override
     public String toString() {

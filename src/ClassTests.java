@@ -1,28 +1,28 @@
 import spaceinvadders.*;
-import spaceinvadders.Character;
+import spaceinvadders.Shootable;
 
 public class ClassTests {
     public static void main(String[] args) {
 
 
         //Factory TEST!
-        Character[] a = GameObjectsFactory.createCharacters(GameLevel.INSANE);
+        Shootable[] a = GameObjectsFactory.createCharacters(GameLevel.INSANE);
         int aa = 0;
         int pb = 0;
         int bb = 0;
         int ss = 0;
 
-        for (Character character : a) {
-            if (character instanceof Alien) {
+        for (Shootable shootable : a) {
+            if (shootable instanceof Alien) {
                 aa++;
             }
-            if (character instanceof ProtectionBlock) {
+            if (shootable instanceof ProtectionBlock) {
                 pb++;
             }
-            if (character instanceof Boss) {
+            if (shootable instanceof Boss) {
                 bb++;
             }
-            if (character instanceof SpaceShip) {
+            if (shootable instanceof SpaceShip) {
                 ss++;
             }
         }System.out.println("Array size: " + a.length + "---> Alien: " + aa + " -- ProtectionBlock: " + pb + " -- Boss: " + bb + " -- SpaceShip: " + ss);

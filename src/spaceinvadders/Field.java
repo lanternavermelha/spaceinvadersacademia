@@ -1,6 +1,5 @@
 package spaceinvadders;
 
-import org.academiadecodigo.simplegraphics.graphics.Color;
 import org.academiadecodigo.simplegraphics.graphics.Rectangle;
 import org.academiadecodigo.simplegraphics.keyboard.Keyboard;
 import org.academiadecodigo.simplegraphics.keyboard.KeyboardEvent;
@@ -12,7 +11,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 public class Field implements KeyboardHandler {
@@ -24,12 +22,11 @@ public class Field implements KeyboardHandler {
 
     private static final int MOVE_UNIT = 20;
     private int score;
-    private Character[] gameObjects;
-    private ArrayList<Alien> aliens;
+    private Shootable[] gameObjects;
+    private Alien[] aliens;
     private ArrayList<ProtectionBlock> blocks;
     private Keyboard keyboard;
     private SpaceShip spaceShip;
-    private Rectangle gameCanvas;
     private Picture spaceCanvas;
     private ArrayList<Boss> boss = null;
     private Boss b;
@@ -63,7 +60,7 @@ public class Field implements KeyboardHandler {
 
     public void init() {
         //Theme Music
-        play("/Users/albertoreis/dev/spaceinvadersgroup/resources/8bit_Trisco.wav");
+       // play("/Users/albertoreis/dev/spaceinvadersgroup/resources/8bit_Trisco.wav");
 
         createCanvas();
 
@@ -75,12 +72,7 @@ public class Field implements KeyboardHandler {
 
         b = (Boss) gameObjects[gameObjects.length - 2];
 
-        for (Character a : gameObjects) {
-            if (a instanceof Alien) {
-                System.out.println(a);
-                System.out.println(a.getX()+" "+a.getY());
-            }
-        }
+       //Alien.moveHorde(aliens);
     }
 
     //PLAYSOUNDS
@@ -101,69 +93,6 @@ public class Field implements KeyboardHandler {
     }
 
 
-    public Alien updateAlienReferenceRight(Alien[] aliens) {
-        Alien reference = aliens[aliens.length - 1];
-        if (aliens[14].isDead() && aliens[4].isDead() && aliens[9].isDead()) {
-            reference = aliens[13];
-            if (aliens[13].isDead() && aliens[8].isDead() && aliens[3].isDead()) {
-                reference = aliens[12];
-                if (aliens[12].isDead() && aliens[7].isDead() && aliens[2].isDead()) {
-                    reference = aliens[11];
-                    if (aliens[6].isDead() && aliens[6].isDead() && aliens[1].isDead()) {
-                        reference = aliens[10];
-                    }
-                }
-            }
-        }
-        return reference;
-    }
-
-    public Alien updateAlienReferenceLeft(Alien[] aliens) {
-        Alien reference = aliens[0];
-        if (aliens[0].isDead() && aliens[5].isDead() && aliens[10].isDead()) {
-            reference = aliens[1];
-            if (aliens[1].isDead() && aliens[6].isDead() && aliens[11].isDead()) {
-                reference = aliens[2];
-                if (aliens[2].isDead() && aliens[7].isDead() && aliens[12].isDead()) {
-                    reference = aliens[3];
-                }
-            }
-        }
-        return reference;
-    }
-
-    public void moveAliens(Alien[] aliens) {
-
-        while (aliens[14].getY() <= HEIGHT * .8) {
-
-            while (updateAlienReferenceRight(aliens).getX() + aliens[0].getWidth() < WIDTH - PADDING) {
-                try {
-                    Thread.sleep(DELAY);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-                for (int i = 0; i < aliens.length; i++) {
-                    aliens[i].moveRight();
-                }
-            }
-            for (Alien a : aliens) {
-                //a.moveDown();
-            }
-            while (updateAlienReferenceLeft(aliens).getX() > PADDING + aliens[0].getWidth()) {
-                try {
-                    Thread.sleep(DELAY);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-                for (int i = 0; i < aliens.length; i++) {
-                    aliens[i].moveLeft();
-                }
-            }
-            for (Alien a : aliens) {
-                a.moveDown();
-            }
-        }
-    }
 
     public void keyboardInit() {
         keyboard = new Keyboard(this);

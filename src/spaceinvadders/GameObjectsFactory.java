@@ -5,23 +5,23 @@ import java.util.Arrays;
 public abstract class GameObjectsFactory {
 
 
-    public static Character[] createCharacters(GameLevel level) {
-        Character[] characters = null;
+    public static Shootable[] createCharacters(GameLevel level) {
+        Shootable[] shootables = null;
         switch (level) {
             case ROOKIE:
-                characters = rookie();
+                shootables = rookie();
                 break;
             case INTERMEDIATE:
-                characters = intermediate();
+                shootables = intermediate();
                 break;
             case PRO:
-                characters = pro();
+                shootables = pro();
                 break;
             case INSANE:
-                characters = insane();
+                shootables = insane();
                 break;
         }
-        return characters;
+        return shootables;
     }
 
 
@@ -30,10 +30,10 @@ public abstract class GameObjectsFactory {
      *
      * 15 Aliens / 5 Protection Blocs / 1 Boss / 1 Spaceship
      *
-     * @return spaceinvadders.Character[]
+     * @return spaceinvadders.Shootable[]
      */
 
-    private static Character[] rookie() {
+    private static Shootable[] rookie() {
         //TODO -- improve this magic numbers!!!!
         int arraySize = 22;
         int numOfAliens = 15;
@@ -43,20 +43,19 @@ public abstract class GameObjectsFactory {
         int alienSpeed = 5;
         int spaceshipArrayPos = arraySize-1;
 
-        Character[]characters = new Character[arraySize]; //spaceinvadders.Character array
+        Shootable[] shootables = new Shootable[arraySize]; //spaceinvadders.Shootable array
 
         //GameObjects Creation
         //Player
-        characters[spaceshipArrayPos] = new SpaceShip(0, 0, 5);
+        shootables[spaceshipArrayPos] = new SpaceShip(0, 0, 5);
 
         //ALIENS CREATION
         int alienStartX = Field.getWIDTH() / 3;
         int AlienStartY = 20;//this needs to be better
 
-        for (int i = 0; i < characters.length; i++) {
+        for (int i = 0; i < shootables.length; i++) {
             if (i < numOfAliens) {
-                System.out.println("alien? "+i);
-                characters[i] = new Alien(alienStartX, AlienStartY, alienSpeed);
+                shootables[i] = new Alien(alienStartX, AlienStartY, alienSpeed);
                 alienStartX += 70;//WHY 70 ? -- can we get it from a variable/constant?
                 if (i == 4 || i == 9) {
                     alienStartX = Field.getWIDTH() / 3;
@@ -65,19 +64,15 @@ public abstract class GameObjectsFactory {
             }
             //Obstacle Creation
             if (i >= numOfAliens && i < numOfBricks + numOfAliens) {
-                System.out.println("block? "+i);
-                characters[i] = new ProtectionBlock(blocksGap, 0, 0);
+                shootables[i] = new ProtectionBlock(blocksGap, 0, 0);
                 blocksGap += 150;//to be improved
             }
             //spaceinvadders.Boss Creation
             if (i == bossArrayPos) {
-                System.out.println("boss? "+i);
-                characters[i] = new Boss(Field.getWIDTH() / 2, 100, 20);
+                shootables[i] = new Boss(Field.getWIDTH() / 2, 100, 20);
             }
         }
-
-        System.out.println(Arrays.toString(characters));
-        return characters;
+        return shootables;
     }
 
     /**
@@ -85,10 +80,10 @@ public abstract class GameObjectsFactory {
      *
      * 20 Aliens / 4 Protection Blocs / 1 Boss / 1 Spaceship
      *
-     * @return spaceinvadders.Character[]
+     * @return spaceinvadders.Shootable[]
      */
 
-    private static Character[] intermediate() {
+    private static Shootable[] intermediate() {
         //TODO -- improve enemys shoot or speed each level up?
         int arraySize = 26;
         int numOfAliens = 20;
@@ -98,18 +93,18 @@ public abstract class GameObjectsFactory {
         int alienSpeed = 10;
         int spaceshipArrayPos =arraySize-1;
 
-        Character[]characters = new Character[arraySize]; //spaceinvadders.Character array
+        Shootable[] shootables = new Shootable[arraySize]; //spaceinvadders.Shootable array
 
         //GameObjects Creation
         //Player
-        characters[spaceshipArrayPos] = new SpaceShip(0, 0, 5);
+        shootables[spaceshipArrayPos] = new SpaceShip(0, 0, 5);
 
         //ALIENS CREATION
         int alienStartX = Field.getWIDTH() / 3;
         int AlienStartY = 20;//this needs to be better
-        for (int i = 0; i < characters.length; i++) {
+        for (int i = 0; i < shootables.length; i++) {
             if (i <= numOfAliens) {
-                characters[i] = new Alien(alienStartX, AlienStartY, alienSpeed);
+                shootables[i] = new Alien(alienStartX, AlienStartY, alienSpeed);
                 alienStartX += 70;
                 //WHY 70 ? -- can we get it from a variable/constant?
                 if (i == 4 || i == 9||i==14) {
@@ -120,26 +115,25 @@ public abstract class GameObjectsFactory {
 
             //Obstacle Creation
             if (i >= numOfAliens && i < numOfBricks + numOfAliens) {
-                characters[i] = new ProtectionBlock(blocksGap, 0, 0);
+                shootables[i] = new ProtectionBlock(blocksGap, 0, 0);
                 blocksGap += 150;//to be improved
             }
             //spaceinvadders.Boss Creation
             if (i == bossArrayPos) {
-                characters[i] = new Boss(Field.getWIDTH() / 2, 100, 20);
+                shootables[i] = new Boss(Field.getWIDTH() / 2, 100, 20);
             }
         }
-        System.out.println(Arrays.toString(characters));
-        return characters;
+        return shootables;
     }
     /**
      * Method to create Pro Level GameObjects:
      *
      * 20 Aliens / 2 Protection Blocs / 2 Bosses / 1 Spaceship
      *
-     * @return spaceinvadders.Character[]
+     * @return spaceinvadders.Shootable[]
      */
 
-    private static Character[] pro() {
+    private static Shootable[] pro() {
         //TODO -- improve enemys shoot or speed each level up?
         int arraySize = 25;
         int numOfAliens = 20;
@@ -149,18 +143,18 @@ public abstract class GameObjectsFactory {
         int alienSpeed = 15;
         int spaceshipArrayPos =arraySize-1;
 
-        Character[]characters = new Character[arraySize]; //spaceinvadders.Character array
+        Shootable[] shootables = new Shootable[arraySize]; //spaceinvadders.Shootable array
 
         //GameObjects Creation
         //Player
-        characters[spaceshipArrayPos] = new SpaceShip(0, 0, 5);
+        shootables[spaceshipArrayPos] = new SpaceShip(0, 0, 5);
 
         //ALIENS CREATION
         int alienStartX = Field.getWIDTH() / 3;
         int AlienStartY = 20;//this needs to be better
-        for (int i = 0; i < characters.length; i++) {
+        for (int i = 0; i < shootables.length; i++) {
             if (i <= numOfAliens) {
-                characters[i] = new Alien(alienStartX, AlienStartY, alienSpeed);
+                shootables[i] = new Alien(alienStartX, AlienStartY, alienSpeed);
                 alienStartX += 70;//WHY 70 ? -- can we get it from a variable/constant?
                 if (i == 4 || i == 9||i==14) {
                     alienStartX = Field.getWIDTH() / 3;
@@ -170,29 +164,29 @@ public abstract class GameObjectsFactory {
 
             //Obstacle Creation
             if (i ==20 ||i==21 ) {
-                characters[i] = new ProtectionBlock(blocksGap, 0, 0);
+                shootables[i] = new ProtectionBlock(blocksGap, 0, 0);
                 blocksGap += 250;//to be improved
             }
             //spaceinvadders.Boss Creation
             if (i == bossArrayPos ) {
-                characters[i] = new Boss(1, 100, 20);
+                shootables[i] = new Boss(1, 100, 20);
             }
             if (i== bossArrayPos+1) {
-                characters[i] = new Boss(0, 100, 20);
+                shootables[i] = new Boss(0, 100, 20);
             }
         }
 
-        System.out.println(Arrays.toString(characters));
-        return characters;
+        System.out.println(Arrays.toString(shootables));
+        return shootables;
     }
     /**
      * Method to create Intermediate Level GameObjects:
      *
      * 25 Aliens / no Protection Blocs / 3 Bosses / 1 Spaceship
      *
-     * @return spaceinvadders.Character[]
+     * @return spaceinvadders.Shootable[]
      */
-    private static Character[] insane() {
+    private static Shootable[] insane() {
         //TODO -- improve this magic numbers!!!!
         int arraySize = 29;
         int numOfAliens = 25;
@@ -200,19 +194,19 @@ public abstract class GameObjectsFactory {
         int alienSpeed = 35;
         int spaceshipArrayPos =arraySize-1;
 
-        Character[]characters = new Character[arraySize]; //spaceinvadders.Character array
+        Shootable[] shootables = new Shootable[arraySize]; //spaceinvadders.Shootable array
 
         //GameObjects Creation
         //Player
-        characters[spaceshipArrayPos] = new SpaceShip(0, 0, 5);
+        shootables[spaceshipArrayPos] = new SpaceShip(0, 0, 5);
 
         //ALIENS CREATION
         int alienStartX = Field.getWIDTH() / 3;
         int AlienStartY = 20;//this needs to be better
 
-        for (int i = 0; i < characters.length; i++) {
+        for (int i = 0; i < shootables.length; i++) {
             if (i <= numOfAliens) {
-                characters[i] = new Alien(alienStartX, AlienStartY, alienSpeed);
+                shootables[i] = new Alien(alienStartX, AlienStartY, alienSpeed);
                 alienStartX += 70;//WHY 70 ? -- can we get it from a variable/constant?
                 if (i == 4 || i == 9||i==14||i==19) {
                     alienStartX = Field.getWIDTH() / 3;
@@ -221,15 +215,15 @@ public abstract class GameObjectsFactory {
             }
             //spaceinvadders.Boss Creation
             if (i == bossArrayPos || i==bossArrayPos+2) {
-                characters[i] = new Boss(1, 100, 20);
+                shootables[i] = new Boss(1, 100, 20);
             }
             if (i== bossArrayPos+1) {
-                characters[i] = new Boss(0, 100, 20);
+                shootables[i] = new Boss(0, 100, 20);
             }
         }
 
-        System.out.println(Arrays.toString(characters));
-        return characters;
+        System.out.println(Arrays.toString(shootables));
+        return shootables;
     }
 }
 
