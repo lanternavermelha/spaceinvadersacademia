@@ -2,6 +2,9 @@ package spaceinvadders;
 
 import org.academiadecodigo.simplegraphics.pictures.Picture;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
 public class Bullet {
 
     private Picture representation;
@@ -13,10 +16,12 @@ public class Bullet {
         int centerY = shootable.getY() - (shootable.getHeight() / 2);
 
         if (shootable instanceof SpaceShip) {
-            representation = new Picture(centerX, centerY, "/Users/albertoreis/dev/spaceinvadersgroup/resources/projectile.png");
+            //changed Y to shoot from the bottom of the character, need to find a better way
+            representation = new Picture(centerX, centerY+30, "/Users/albertoreis/dev/spaceinvadersgroup/resources/projectile.png");
         }
         if (shootable instanceof Boss) {
-            representation = new Picture(centerX, centerY, "/Users/albertoreis/dev/spaceinvadersgroup/resources/bossprojectile.png");
+            //changed Y to shoot from the bottom of the character, need to find a better way
+            representation = new Picture(centerX, centerY+ shootable.getHeight(), "/Users/albertoreis/dev/spaceinvadersgroup/resources/bossprojectile.png");
         }
         if (shootable instanceof Alien) {
             representation = new Picture(centerX, centerY, "/Users/albertoreis/dev/spaceinvadersgroup/resources/enemyprojectile.png");
@@ -24,35 +29,31 @@ public class Bullet {
         representation.draw();
     }
 
-    public void shootUpwards(Shootable[] shootables) {
+    public void shootUpwards(final Shootable[] shootables) {
         targets = shootables;
-
-        Thread t1 = new Thread(new Runnable() {
+        System.out.print(Arrays.toString(targets));
+         Thread t1 = new Thread(new Runnable() {
             public void run() {
                 while (representation.getY() > Field.getPADDING()) {
                     try {
-                        Thread.sleep(10);
+                        Thread.sleep(2);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
-                    representation.translate(0, -3);
-                    //System.out.println(Arrays.toString(targets));
-                    for (int i = targets.length - 1; i >= 0; i--) {
-                        System.out.println("inicio for indice: " + i);
-                        if (targets[i].isVisible() && isSamePos(targets[i])) {
+                    representation.translate(0, -1);
+                    for (Shootable target : shootables
+                    ) { if (target.isVisible() && isSamePos(target)) {
                             representation.delete();
-                            targets[i].hit();
-                            System.out.println("aaaa");
+                            target.hit();
+                        return;
                         }
-                        //if (hitChecker(targets[i])) {
-                        //  System.out.println("Aqui! " + targets[i]);
-                        //}
                     }
                 }
                 representation.delete();
             }
         });
         t1.start();
+
     }
 
     private boolean isSamePos(Shootable target) {

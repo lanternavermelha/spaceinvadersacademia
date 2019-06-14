@@ -83,8 +83,9 @@ public class SpaceShip implements Shootable {
     @Override
     public void kill() {
         ship.delete();
-        Explosion.explode(this);
         visible = false;
+        Explosion.explode(this);
+
     }
 
     @Override

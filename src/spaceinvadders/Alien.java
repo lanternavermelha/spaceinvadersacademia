@@ -38,9 +38,9 @@ public class Alien implements Shootable {
     }
 
     public void kill() {
+        visible = false;
         representation.delete();
         Explosion.explode(this);
-        visible = false;
     }
 
     @Override

@@ -14,8 +14,10 @@ public class Boss implements Shootable {
     private boolean visible;
 
     public void hit() {
-        Field.play("/Users/albertoreis/dev/spaceinvadersgroup/resources/explosion.wav");
         hitpoints -= 50;
+        if (hitpoints==0){
+            kill();
+        }
     }
 
     public Boss(int x, int y, int speed) {//not doing shit with this values!!
@@ -38,7 +40,6 @@ public class Boss implements Shootable {
     public void kill() {
         visible = false;
         Explosion.explode(this);
-        Field.play("/Users/albertoreis/dev/spaceinvadersgroup/resources/explosion.wav");
         representation.delete();
     }
 
