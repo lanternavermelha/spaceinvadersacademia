@@ -2,7 +2,7 @@ package spaceinvadders;
 
 public interface Shootable {
 
-    boolean isVisible();
+    boolean isActive();
 
     int getX();
 
@@ -13,10 +13,6 @@ public interface Shootable {
     int getHeight();
 
     void kill();
-
-    int getSpeed();
-
-    void shoot(Shootable[] shootables);
 
     void hit();
 }

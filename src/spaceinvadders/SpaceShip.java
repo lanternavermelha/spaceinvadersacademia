@@ -1,24 +1,25 @@
 package spaceinvadders;
 
-import org.academiadecodigo.simplegraphics.graphics.Rectangle;
 import org.academiadecodigo.simplegraphics.pictures.Picture;
 
 public class SpaceShip implements Shootable {
 
-    private boolean visible;
+    private boolean active;
     private Picture ship;
     private int speed;
     private int playerLevel;
-
-
-
     private int aliensKilled;
 
-    public SpaceShip(int x, int y, int speed) {
-        ship = new Picture(Field.getWIDTH() / 2, Field.getHEIGHT() - 100, "Resources/ship.png");
+    public SpaceShip(GameLevel gameLevel) {
+        //TODO switch to change speed and shooting pattern
+        System.out.println(55);
+        ship = new Picture(Field.getWIDTH() / 2, Field.getHEIGHT() - 100, "resources/ship.png");
+        System.out.println(56);
         ship.draw();
-        this.speed = 10;//speed;
-        visible=true;
+        System.out.println(57);
+        this.speed = 10;
+        System.out.println(58);
+        active = true;
     }
 
     public int getX() {
@@ -47,43 +48,42 @@ public class SpaceShip implements Shootable {
 
     public void moveRight() {
         if (getX() + getWidth() < Field.getWIDTH()) {
-            ship.translate(speed, 0);
+            ship.translate(10, 0);
         }
     }
 
     public void moveLeft() {
         if (getX() > Field.getPADDING()) {
-            ship.translate(-speed, 0);
+            ship.translate(-10, 0);
         }
     }
 
     @Override
     public void hit() {
-        Field.play("/Users/albertoreis/dev/spaceinvadersgroup/resources/explosion.wav");
+        Field.play("resources/explosion.wav");
         kill();
     }
 
-    @Override
     public void shoot(Shootable[] gameobjects) {
         Bullet bullet = new Bullet(this);
         bullet.shootUpwards(gameobjects);
     }
 
-    @Override
+
     public int getSpeed() {
-        return speed;
+        return 1;
     }
+
 
     @Override
-    public boolean isVisible() {
-        return visible;
+    public boolean isActive() {
+        return active;
     }
-
 
     @Override
     public void kill() {
         ship.delete();
-        visible = false;
+        active = false;
         Explosion.explode(this);
 
     }
