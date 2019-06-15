@@ -12,13 +12,9 @@ public class SpaceShip implements Shootable {
 
     public SpaceShip(GameLevel gameLevel) {
         //TODO switch to change speed and shooting pattern
-        System.out.println(55);
         ship = new Picture(Field.getWIDTH() / 2, Field.getHEIGHT() - 100, "resources/ship.png");
-        System.out.println(56);
         ship.draw();
-        System.out.println(57);
         this.speed = 10;
-        System.out.println(58);
         active = true;
     }
 
@@ -52,7 +48,9 @@ public class SpaceShip implements Shootable {
         }
     }
 
+
     public void moveLeft() {
+
         if (getX() > Field.getPADDING()) {
             ship.translate(-10, 0);
         }
@@ -60,18 +58,13 @@ public class SpaceShip implements Shootable {
 
     @Override
     public void hit() {
-        Field.play("resources/explosion.wav");
+        Field.playSound("resources/explosion.wav");
         kill();
     }
 
     public void shoot(Shootable[] gameobjects) {
         Bullet bullet = new Bullet(this);
         bullet.shootUpwards(gameobjects);
-    }
-
-
-    public int getSpeed() {
-        return 1;
     }
 
 

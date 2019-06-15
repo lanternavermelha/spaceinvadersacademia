@@ -2,21 +2,22 @@ package spaceinvadders;
 
 import org.academiadecodigo.simplegraphics.pictures.Picture;
 
-import java.util.Arrays;
 
 public class Bullet {
 
     private Picture representation;
     private Shootable[] targets;
 
-
     public Bullet(Shootable shootable) {
+        bulletType(shootable);
+
+    }
+
+    private void bulletType(Shootable shootable) {
         int shipBulletPosX = shootable.getX() + (shootable.getWidth() / 2);
         int shipBulletPosY = shootable.getY();
         int centerX = shootable.getX() + (shootable.getWidth() / 2);
         int centerY = shootable.getY() - (shootable.getHeight() / 2);
-
-
         if (shootable instanceof SpaceShip) {
             representation = new Picture(shipBulletPosX, shipBulletPosY, "resources/projectile.png");
         }
@@ -32,7 +33,6 @@ public class Bullet {
 
     public void shootUpwards(final Shootable[] shootables) {
         targets = shootables;
-        System.out.print(Arrays.toString(targets));
         Thread bulletTrajectory = new Thread(new Runnable() {
             public void run() {
                 while (representation.getY() > Field.getPADDING()) {
@@ -59,7 +59,7 @@ public class Bullet {
     }
 
     private boolean isSamePosUp(Shootable target) {
-        return representation.getY() == target.getY() + target.getHeight()
+        return representation.getY() <= target.getY() + target.getHeight() && representation.getY() >= target.getY()
                 && representation.getX() <= target.getX() + target.getWidth()
                 && representation.getX() >= target.getX();
     }
@@ -70,22 +70,10 @@ public class Bullet {
                 && representation.getX() >= target.getX();
     }
 
-    public boolean hitChecker(Shootable target) {
-        if (target.isActive()
-                && representation.getY() == target.getY() + target.getHeight()
-                && representation.getX() <= target.getX() + target.getWidth()
-                && representation.getX() >= target.getX()) {
-            representation.delete();
-            target.hit();
-            return true;
-        }
-        return false;
-    }
-
 
     public void shootDownwards() {
-        representation.draw();
 
+        representation.draw();
         Thread t1 = new Thread(new Runnable() {
             public void run() {
                 while (representation.getY() + representation.getHeight() < Field.getHEIGHT() - Field.getPADDING()) {

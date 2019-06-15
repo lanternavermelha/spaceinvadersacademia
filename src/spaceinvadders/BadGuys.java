@@ -3,9 +3,9 @@ package spaceinvadders;
 abstract class BadGuys implements Shootable {
 
 
-    private int speed;
+    private GameLevel gameLevel;
 
-    public abstract int getSpeed();
+    public abstract GameLevel getGameLevel();
 
     public abstract void shoot(Shootable[] shootables);
 }

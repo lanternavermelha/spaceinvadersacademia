@@ -33,10 +33,10 @@ public class Explosion {
     public static void explode(Shootable shootable) {
         Picture explosion = new Picture(shootable.getX(), shootable.getY(), "resources/animation/bossexplosion1.png");
         explosion.draw();
+        //Field.playSound("resources/bulletsound.wav");
         for (int i = 0; i < 6; i++) {
-            sleep(100);
+            sleep(20);
             animate(i, explosion);
-            Field.play("resources/explosion.wav");
         }
         explosion.delete();
     }

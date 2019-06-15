@@ -12,18 +12,23 @@ public class ProtectionBlock implements Shootable {
     public ProtectionBlock(int x) {
         positionY = 450;
         hitPoints = 300;
-
         representation = new Picture(x, positionY, "resources/laserGreen.png");
         representation.draw();
         active = true;
     }
 
     public void hit() {
+
+
         hitPoints -= 50;
         if (hitPoints == 0) {
             kill();
         }
+
+
         changeRepresentation();
+
+
     }
 
     private void changeRepresentation() {

@@ -7,11 +7,15 @@ public class Boss extends BadGuys {
     private Picture representation;
     private int hitPoints;
     private boolean active;
+    private GameLevel gameLevel;
 
     public Boss(int x, int y, GameLevel gameLevel) {//not doing shit with this values!!
-        //TODO switch to change speed and shooting pattern
+
+        this.gameLevel = gameLevel;
 
         hitPoints = 300;
+
+        //TODO better way to randomize position?
         double ran = Math.random();
         if (ran < .4) {
             representation = new Picture(200, 100, "resources/super.png");
@@ -27,10 +31,17 @@ public class Boss extends BadGuys {
 
     public void hit() {
         hitPoints -= 50;
+        AudioPlay bossHit = new AudioPlay("resources/bulletsound.wav");
+        bossHit.runAudio();
+
         if (hitPoints == 0) {
             kill();
+            Explosion.explode(this);
+            //return;
         }
-        Field.play("resources/bulletsound.wav");
+        bossHit.stopAudio();
+
+        //Field.playSound("resources/bulletsound.wav");
     }
 
     public void kill() {
@@ -40,20 +51,48 @@ public class Boss extends BadGuys {
     }
 
     /**
-     * activate the animation
+     * Initiate a new Thread to move Bosses
      */
     public void activate() {
-        representation.draw();
-        Thread t1 = new Thread(new Runnable() {
-            public void run() {
-                while (true) {
-                    move();
+        if (!active) {
+            representation.draw();
+            Thread bossMove = new Thread(new Runnable() {
+                public void run() {
+                    while (true) {
+                        move();
+                    }
                 }
-            }
-        });
-        t1.start();
-        active = true;
+            });
+            bossMove.start();
+            active = true;
+        }
     }
+
+    /**
+     * loops the boss movement right - left - right
+     */
+    public void move() {
+        //TODO maybe here to implement different speed
+        //To the right
+        while (getX() > Field.getPADDING()) {
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            representation.translate(-1, 0);
+        }
+        //To the left
+        while (getX() < Field.getWIDTH() - Field.getPADDING() - getWidth()) {
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            representation.translate(+1, 0);
+        }
+    }
+
 
     @Override
     public boolean isActive() {
@@ -61,8 +100,8 @@ public class Boss extends BadGuys {
     }
 
     @Override
-    public int getSpeed() {
-        return 0;
+    public GameLevel getGameLevel() {
+        return gameLevel;
     }
 
     @Override
@@ -84,32 +123,12 @@ public class Boss extends BadGuys {
     public int getHeight() {
         return representation.getHeight();
     }
+//TODO needs to implement this method
 
     @Override
     public void shoot(Shootable[] shootables) {
         Bullet bullet = new Bullet(this);
         bullet.shootDownwards();
-    }
-
-    public void move() {
-//TODO maybe here to implement different speed
-        while (getX() > Field.getPADDING()) {
-            representation.translate(-5, 0);
-            try {
-                Thread.sleep(20);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
-
-        while (getX() < Field.getWIDTH() - Field.getPADDING() - getWidth()) {
-            representation.translate(+5, 0);
-            try {
-                Thread.sleep(20);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
     }
 
     @Override
