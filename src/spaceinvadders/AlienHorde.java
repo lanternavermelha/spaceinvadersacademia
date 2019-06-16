@@ -1,49 +1,65 @@
 package spaceinvadders;
 
-public abstract class AlienHorde {
+abstract class AlienHorde {
+
+    /**
+     * checks if all aliens in the horde are dead.
+     *
+     * @param gameObjects
+     * @return true if all aliens are dead
+     */
+
+    private static int deadCount;
 
     private static int levelSpeed(GameLevel gameLevel) {
         int speed = 0;
 
         switch (gameLevel) {
             case ROOKIE:
-                speed = 10;
+                speed = 20;
                 break;
             case INTERMEDIATE:
-                speed = 8;
+                speed = 17;
                 break;
             case PRO:
-                speed = 6;
+                speed = 14;
                 break;
             case INSANE:
-                speed = 5;
+                speed = 10;
                 break;
         }
         return speed;
     }
 
-
-    public static void move(Shootable[] gameObjects) {
+    static void move(Shootable[] gameObjects) {
         Alien[] horde = selectHorde(gameObjects);
         int speed = levelSpeed(horde[0].getGameLevel());
-        int gameOverLimmit = 450;
+        int gameOverLimmit = 420;
 
         while (horde[horde.length - 1].getY() <= gameOverLimmit) {
+
             while (alienReferenceRight(horde).getX() + alienReferenceRight(horde).getWidth() <= Field.getWIDTH() - Field.getPADDING()) {
+
                 try {
                     Thread.sleep(speed);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
                 for (int i = 0; i < horde.length; i++) {
-                    horde[i].moveRight();
-                    horde[i].shoot(gameObjects);
+                    if (bossIsReady(gameObjects)) {
+                        return;
+                    }
+                    if (gameObjects[gameObjects.length - 1].isActive()) {
+                        horde[i].moveRight();
+                        horde[i].shoot(gameObjects);
+                    } else return;
                 }
             }
 
             for (Alien a : horde) {
                 a.moveDown();
             }
+
             while (alienReferenceLeft(horde).getX() > Field.getPADDING() + horde[0].getWidth()) {
                 try {
                     Thread.sleep(speed);
@@ -51,10 +67,16 @@ public abstract class AlienHorde {
                     Thread.currentThread().interrupt();
                 }
                 for (int i = 0; i < horde.length; i++) {
-                    horde[i].moveLeft();
-                    horde[i].shoot(gameObjects);
+                    if (bossIsReady(gameObjects)) {
+                        return;
+                    }
+                    if (gameObjects[gameObjects.length - 1].isActive()) {
+                        horde[i].moveLeft();
+                        horde[i].shoot(gameObjects);
+                    } else return;
                 }
             }
+
             for (Alien a : horde) {
                 a.moveDown();
             }
@@ -65,6 +87,7 @@ public abstract class AlienHorde {
      * @param gameObjects
      * @return an array with only aliens
      */
+
     private static Alien[] selectHorde(Shootable[] gameObjects) {
         int aliensAmount = 0;
 
@@ -79,30 +102,6 @@ public abstract class AlienHorde {
             result[i] = (Alien) gameObjects[i];
         }
         return result;
-    }
-
-    /**
-     * updates the alien bound reference to the right
-     *
-     * @param aliens
-     * @return updated alien reference
-     */
-    private static Alien alienReferenceRight(Alien[] aliens) {
-        Alien reference = aliens[aliens.length - 1];
-        if (!aliens[14].isActive() && !aliens[4].isActive() && !aliens[9].isActive()) {
-            reference = aliens[13];
-            if (!aliens[13].isActive() && !aliens[8].isActive() && !aliens[3].isActive()) {
-                reference = aliens[12];
-                if (aliens[12].isActive() && aliens[7].isActive() && !aliens[2].isActive()) {
-                    reference = aliens[11];
-                   /* if (aliens.length == 20 && !aliens[11].isActive() && !aliens[6].isActive() && !aliens[1].isActive()) {
-                        reference = aliens[10];
-
-                    }*/
-                }
-            }
-        }
-        return reference;
     }
 
     /**
@@ -147,16 +146,36 @@ public abstract class AlienHorde {
     }
 
     /**
-     * checks if all aliens in the horde are dead.
+     * updates the alien bound reference to the right
      *
-     * @param gameObjects
-     * @return true if all aliens are dead
+     * @param aliens
+     * @return updated alien reference
      */
+    private static Alien alienReferenceRight(Alien[] aliens) {
+        Alien reference = aliens[aliens.length - 1];
+        if (!aliens[14].isActive() && !aliens[4].isActive() && !aliens[9].isActive()) {
+            reference = aliens[13];
+            System.out.println(13);
+            if (!aliens[13].isActive() && !aliens[8].isActive() && !aliens[3].isActive()) {
+                reference = aliens[12];
+                System.out.println(12);
+                if (aliens[12].isActive() && aliens[7].isActive() && !aliens[2].isActive()) {
+                    reference = aliens[11];
+                    System.out.println(11);
+                    if (aliens.length == 20 && !aliens[11].isActive() && !aliens[6].isActive() && !aliens[1].isActive()) {
+                        reference = aliens[10];
+                        System.out.println(10);
 
-    static int deadCount;
+                    }
+                }
+            }
+        }
+        return reference;
+    }
 
-    public static boolean bossIsReady(Shootable[] gameObjects) {
+    private static boolean bossIsReady(Shootable[] gameObjects) {
         boolean bossAround = false;
+
         Alien[] aliens = selectHorde(gameObjects);
 
         if (deadCount == aliens.length) {
@@ -169,10 +188,11 @@ public abstract class AlienHorde {
                 deadCount++;
             }
         }
-
         if (deadCount == aliens.length) {
+            System.out.println("BOSS IS COMMING");
             return true;
         }
+        System.out.println("BOSS IS NOT READY");
         return false;
     }
 }

@@ -6,6 +6,8 @@ import org.academiadecodigo.simplegraphics.keyboard.KeyboardEventType;
 import org.academiadecodigo.simplegraphics.keyboard.KeyboardHandler;
 import org.academiadecodigo.simplegraphics.pictures.Picture;
 
+import java.util.ArrayList;
+
 
 public class Field {
 
@@ -16,6 +18,8 @@ public class Field {
     private static final int HEIGHT = 600;
     private static final int PADDING = 10;
 
+    private boolean gameOver;
+
     private Picture canvas;
     private int score;
     private Shootable[] gameObjects;
@@ -23,32 +27,39 @@ public class Field {
     private SpaceShip spaceShip;
     private GameLevel gameLevel;
     private UserInputHandler userInputHandler = new UserInputHandler();
+    private ArrayList<Boss> bosses = new ArrayList<>();
+    private AudioPlay backgroundmusic = new AudioPlay();
+
+    private int bosscount = 0;
+
+    static int getWIDTH() {
+        return WIDTH;
+    }
 
     public Field(GameLevel gameLevel) {
         this.gameLevel = gameLevel;
     }
 
-
-    public static int getWIDTH() {
-        return WIDTH;
-    }
-
-    public static int getHEIGHT() {
+    static int getHEIGHT() {
         return HEIGHT;
     }
 
-    public static int getPADDING() {
+    static int getPADDING() {
         return PADDING;
+    }
+
+    void setBosscount(int i) {
+        bosscount += i;
     }
 
     /**
      * Method to initiate the game
      */
     public void init() {
-        AudioPlay backgroundmusic = new AudioPlay();
+
         backgroundmusic.backgroundMusic();
 
-        canvas=createCanvas();
+        canvas = createCanvas();
 
         userInputHandler.keyboardInit();
 
@@ -56,15 +67,63 @@ public class Field {
 
         spaceShip = (SpaceShip) gameObjects[gameObjects.length - 1];
 
+        spaceShip.gimmeField(this);
+
+        bossArray();
+
         AlienHorde.move(gameObjects);
+        System.out.println("waiiiiit");
+
+        bossDeploymentCheck();
+
+        if (!gameOver) {
+            for (Boss boss : bosses
+            ) {
+                boss.gimmeField(this);
+                boss.gimmeTargets(gameObjects);
+            }
+        }
+
+        while (!gameOver) {
+            System.out.println(bosscount);
+            if (bosscount == bosses.size()) {
+                System.out.println("WIN");
+                setGameWon();
+            }
+        }
 
     }
+
+    void setGameWon() {
+        this.gameOver = true;
+        Picture gameover = new Picture(PADDING, PADDING, "resources/youwin.jpg");
+        gameover.draw();
+    }
+
+
+    void setGameOver() {
+        this.gameOver = true;
+        Picture gameover = new Picture(PADDING, PADDING, "resources/GameOver.png");
+        gameover.draw();
+        backgroundmusic.killbackgroundmusic();
+    }
+
+    private void bossArray() {
+        for (Shootable shootable : gameObjects
+        ) {
+            if (shootable instanceof Boss) {
+                bosses.add((Boss) shootable);
+            }
+        }
+    }
+
 
     /**
      * Method to create GameCanvas considering each game level
      */
     private Picture createCanvas() {
         Picture canvas = new Picture(PADDING, PADDING, "resources/canvas/rookiecanvas.png");
+
         switch (gameLevel) {
 
             case INTERMEDIATE:
@@ -77,6 +136,8 @@ public class Field {
                 canvas.load("resources/canvas/insanecanvas.png");
                 break;
         }
+
+
         canvas.draw();
         return canvas;
     }
@@ -86,18 +147,17 @@ public class Field {
      */
 
     private void bossDeploymentCheck() {
-        if (AlienHorde.bossIsReady(gameObjects)) {
-            for (Shootable gameObject : gameObjects
-            ) {
-                if (gameObject instanceof Boss) {
-                    if (!gameObject.isActive()) {
-                        ((Boss) gameObject).activate();
-                        score++;
-                    }
+
+        for (Shootable gameObject : gameObjects
+        ) {
+            if (gameObject instanceof Boss) {
+                if (!gameObject.isActive()) {
+                    ((Boss) gameObject).activate();
+                    score++;
+
                 }
             }
         }
-
     }
 
     /**
@@ -137,19 +197,15 @@ public class Field {
             if (keyboardEvent.getKey() == keyboardEvent.KEY_LEFT) {
                 spaceShip.moveLeft();
 
-               //System.out.println("Number of active threads from the given thread: " + Thread.activeCount());
-                // Map<Thread, StackTraceElement[]> threads = Thread.getAllStackTraces();
-                //  System.out.println(threads.keySet());*/
             }
 
 
             if (keyboardEvent.getKey() == keyboardEvent.KEY_SPACE) {
-                if (System.currentTimeMillis() - lastFire < firingInterval){
+                if (System.currentTimeMillis() - lastFire < firingInterval) {
                     return;
                 }
                 lastFire = System.currentTimeMillis();
                 spaceShip.shoot(gameObjects);
-                bossDeploymentCheck();
             }
         }
 

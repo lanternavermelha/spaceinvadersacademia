@@ -9,14 +9,7 @@ public class SpaceShip implements Shootable {
     private GameLevel gameLevel;
 
 
-
-
-    public SpaceShip(GameLevel gameLevel) {
-        ship = new Picture(Field.getWIDTH() / 2, Field.getHEIGHT() - 100, "resources/ship.png");
-        ship.draw();
-        active = true;
-        this.gameLevel = gameLevel;
-    }
+    private Field field;
 
     public int getX() {
         return ship.getX();
@@ -35,7 +28,14 @@ public class SpaceShip implements Shootable {
     }
 
 
-    public void moveRight() {
+    SpaceShip(GameLevel gameLevel) {
+        ship = new Picture(Field.getWIDTH() / 2, Field.getHEIGHT() - 100, "resources/ship.png");
+        ship.draw();
+        active = true;
+        this.gameLevel = gameLevel;
+    }
+
+    void moveRight() {
         if (getX() + getWidth() < Field.getWIDTH()) {
             if (gameLevel == GameLevel.ROOKIE || gameLevel == GameLevel.INTERMEDIATE) {
                 ship.translate(10, 0);
@@ -45,8 +45,7 @@ public class SpaceShip implements Shootable {
         }
     }
 
-
-    public void moveLeft() {
+    void moveLeft() {
 
         if (getX() > Field.getPADDING()) {
             if (gameLevel == GameLevel.ROOKIE || gameLevel == GameLevel.INTERMEDIATE) {
@@ -61,15 +60,21 @@ public class SpaceShip implements Shootable {
     public void hit() {
         kill();
         Explosion.explode(this);
+        active = false;
     }
 
-    public void shoot(Shootable[] gameobjects) {
+    void shoot(Shootable[] gameobjects) {
+        if (isActive()) {
+            Bullet bullet = new Bullet(this);
+            bullet.shootUpwards(gameobjects);
+        }
 
-        Bullet bullet = new Bullet(this);
-        bullet.shootUpwards(gameobjects);
     }
 
+    void gimmeField(Field field) {
+        this.field = field;
 
+    }
     @Override
     public boolean isActive() {
         return active;
@@ -80,6 +85,7 @@ public class SpaceShip implements Shootable {
         ship.delete();
         active = false;
         Explosion.explode(this);
+        field.setGameOver();
 
     }
 

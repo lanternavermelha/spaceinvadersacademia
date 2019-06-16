@@ -3,7 +3,7 @@ package spaceinvadders;
 import org.academiadecodigo.simplegraphics.pictures.Picture;
 
 
-public class Bullet {
+class Bullet {
 
     private Picture representation;
     private Shootable[] targets;
@@ -11,12 +11,15 @@ public class Bullet {
     private volatile boolean exit2 = false;
     private boolean active;
 
-    public boolean isActive() {
-        return active;
+    private Shootable shooter;
+
+    Bullet(Shootable shootable) {
+        shooter = shootable;
+        bulletType(shootable);
     }
 
-    public Bullet(Shootable shootable) {
-        bulletType(shootable);
+    boolean isActive() {
+        return active;
     }
 
     private void bulletType(Shootable shootable) {
@@ -37,12 +40,14 @@ public class Bullet {
         active = true;
     }
 
-
-    public void shootUpwards(final Shootable[] shootables) {
+    void shootUpwards(final Shootable[] shootables) {
         targets = shootables;
         Thread bulletTrajectory = new Thread(new Runnable() {
             public void run() {
                 while (!exit) {
+                    if (shooter.isActive()) {
+                        exit = true;
+                    }
                     while (representation.getY() > Field.getPADDING()) {
                         try {
                             Thread.sleep(2);
@@ -55,7 +60,6 @@ public class Bullet {
                             if (target.isActive() && isSamePosUp(target)) {
                                 representation.delete();
                                 target.hit();
-                                //              Field.playSound("resources/bulletsound.wav");
                                 exit = true;
                                 return;
                             }
@@ -84,7 +88,7 @@ public class Bullet {
     }
 
 
-    public void shootDownwards(final Shootable[] shootables) {
+    void shootDownwards(final Shootable[] shootables) {
         exit2=false;
         targets = shootables;
         representation.draw();
@@ -99,7 +103,7 @@ public class Bullet {
                         }
                         for (Shootable target : shootables) {
                             if (!(target instanceof BadGuys)) {
-                                if (target.isActive() && isSamePosDown(target)) {
+                                if (target.isActive() && isSamePosUp(target)) {
                                     representation.delete();
                                     target.hit();
                                     exit2=true;

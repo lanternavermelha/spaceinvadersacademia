@@ -9,8 +9,8 @@ public class SpaceGame {
 
         //TODO delay is doing something to the game ?
 
-       Menu menu = new Menu();
-       menu.menuSelection();
+        Menu menu = new Menu();
+        menu.menuSelection();
 
         field.init();
     }

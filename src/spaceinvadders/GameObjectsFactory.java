@@ -1,9 +1,9 @@
 package spaceinvadders;
 
-public abstract class GameObjectsFactory {
+abstract class GameObjectsFactory {
 
 
-    public static Shootable[] createCharacters(GameLevel level) {
+    static Shootable[] createCharacters(GameLevel level) {
         Shootable[] shootables = null;
         switch (level) {
             case ROOKIE:
@@ -182,15 +182,15 @@ public abstract class GameObjectsFactory {
      */
     private static Shootable[] insane() {
         //TODO -- improve this magic numbers!!!!
-        int arraySize = 24;
+        int arraySize = 25;
         int numOfAliens = 20;
-        int bossArrayPos = 20;
+        int bossArrayPos = 21;
         int spaceshipArrayPos = arraySize - 1;
 
         Shootable[] shootables = new Shootable[arraySize];
 
         shootables[spaceshipArrayPos] = new SpaceShip(GameLevel.INSANE);
-
+        shootables[20] = new ProtectionBlock(Field.getWIDTH() / 2);
         //ALIENS CREATION
         int alienStartX = Field.getWIDTH() / 3;
         int AlienStartY = 20;//this needs to be better

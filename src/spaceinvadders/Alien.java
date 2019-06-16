@@ -8,12 +8,22 @@ public class Alien extends BadGuys {
     private boolean active;
     private GameLevel gameLevel;
     private Picture representation;
+    private int bulletRate;
 
-    public Alien(int x, int y, GameLevel gameLevel) {
+    Alien(int x, int y, GameLevel gameLevel) {
         //TODO switch to change speed and shooting pattern
         this.gameLevel = gameLevel;
         shuffleRepresentation(x, y);
         active = true;
+
+        if (gameLevel == GameLevel.ROOKIE || gameLevel == GameLevel.INTERMEDIATE) {
+            bulletRate = 2;
+        }
+        if (gameLevel == GameLevel.INSANE || gameLevel == GameLevel.PRO) {
+            bulletRate = 3;
+        }
+
+
     }
 
     /**
@@ -45,12 +55,10 @@ public class Alien extends BadGuys {
     @Override
     public void shoot(Shootable[] characters) {
         int probability = (int) Math.floor(Math.random() * 2000);
-        if (probability == 1) {
+        if (probability > 0 && probability < bulletRate) {
             if (isActive()) {
-                System.out.println("Number of active threads from the given thread: " + Thread.activeCount());
                 Bullet bullet = new Bullet(this);
                 bullet.shootDownwards(characters);
-
             }
         }
     }
@@ -72,13 +80,15 @@ public class Alien extends BadGuys {
         return active;
     }
 
-    public void moveRight() {
+    void moveRight() {
         representation.translate(1, 0);
     }
 
-    public void moveLeft() {
+
+    void moveLeft() {
         representation.translate(-1, 0);
     }
+
 
     public int getX() {
         return representation.getX();
@@ -96,7 +106,7 @@ public class Alien extends BadGuys {
         return representation.getHeight();
     }
 
-    public void moveDown() {
+    void moveDown() {
         representation.translate(0, getHeight());
     }
 
