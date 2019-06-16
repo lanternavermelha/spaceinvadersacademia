@@ -6,16 +6,16 @@ public class SpaceShip implements Shootable {
 
     private boolean active;
     private Picture ship;
-    private int speed;
-    private int playerLevel;
-    private int aliensKilled;
+    private GameLevel gameLevel;
+
+
+
 
     public SpaceShip(GameLevel gameLevel) {
-        //TODO switch to change speed and shooting pattern
         ship = new Picture(Field.getWIDTH() / 2, Field.getHEIGHT() - 100, "resources/ship.png");
         ship.draw();
-        this.speed = 10;
         active = true;
+        this.gameLevel = gameLevel;
     }
 
     public int getX() {
@@ -34,17 +34,14 @@ public class SpaceShip implements Shootable {
         return ship.getHeight();
     }
 
-    public int getPlayerLevel() {
-        return playerLevel;
-    }
-
-    public int getAliensKilled() {
-        return aliensKilled;
-    }
 
     public void moveRight() {
         if (getX() + getWidth() < Field.getWIDTH()) {
-            ship.translate(10, 0);
+            if (gameLevel == GameLevel.ROOKIE || gameLevel == GameLevel.INTERMEDIATE) {
+                ship.translate(10, 0);
+            } else {
+                ship.translate(20, 0);
+            }
         }
     }
 
@@ -52,17 +49,22 @@ public class SpaceShip implements Shootable {
     public void moveLeft() {
 
         if (getX() > Field.getPADDING()) {
-            ship.translate(-10, 0);
+            if (gameLevel == GameLevel.ROOKIE || gameLevel == GameLevel.INTERMEDIATE) {
+                ship.translate(-10, 0);
+            } else {
+                ship.translate(-20, 0);
+            }
         }
     }
 
     @Override
     public void hit() {
-        Field.playSound("resources/explosion.wav");
         kill();
+        Explosion.explode(this);
     }
 
     public void shoot(Shootable[] gameobjects) {
+
         Bullet bullet = new Bullet(this);
         bullet.shootUpwards(gameobjects);
     }

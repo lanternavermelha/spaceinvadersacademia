@@ -37,6 +37,7 @@ public abstract class AlienHorde {
                 }
                 for (int i = 0; i < horde.length; i++) {
                     horde[i].moveRight();
+                    horde[i].shoot(gameObjects);
                 }
             }
 
@@ -51,6 +52,7 @@ public abstract class AlienHorde {
                 }
                 for (int i = 0; i < horde.length; i++) {
                     horde[i].moveLeft();
+                    horde[i].shoot(gameObjects);
                 }
             }
             for (Alien a : horde) {
@@ -150,21 +152,29 @@ public abstract class AlienHorde {
      * @param gameObjects
      * @return true if all aliens are dead
      */
-    public static boolean bossIsReady(Shootable[] gameObjects) {
-        Alien[] aliens = selectHorde(gameObjects);
-        int deadCount = 0;
 
+    static int deadCount;
+
+    public static boolean bossIsReady(Shootable[] gameObjects) {
+        boolean bossAround = false;
+        Alien[] aliens = selectHorde(gameObjects);
+
+        if (deadCount == aliens.length) {
+            return false;
+        }
+
+        deadCount = 0;
         for (Alien alien : aliens) {
             if (!alien.isActive()) {
                 deadCount++;
             }
         }
-        System.out.println(deadCount);
 
         if (deadCount == aliens.length) {
             return true;
         }
         return false;
     }
-
 }
+
+

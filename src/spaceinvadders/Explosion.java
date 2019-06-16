@@ -5,7 +5,6 @@ import org.academiadecodigo.simplegraphics.pictures.Picture;
 public class Explosion {
 
     private static void animate(int i, Picture explosion) {
-
         switch (i) {
             case 0:
                 explosion.load("resources/animation/bossexplosion2.png");
@@ -31,13 +30,13 @@ public class Explosion {
     }
 
     public static void explode(Shootable shootable) {
-        Picture explosion = new Picture(shootable.getX(), shootable.getY(), "resources/animation/bossexplosion1.png");
+        Picture explosion = new Picture(shootable.getX()+shootable.getWidth()/2, shootable.getY()-shootable.getHeight()/2, "resources/animation/bossexplosion1.png");
         explosion.draw();
-        //Field.playSound("resources/bulletsound.wav");
         for (int i = 0; i < 6; i++) {
-            sleep(20);
+            sleep(15);
             animate(i, explosion);
         }
+  //      Field.playSound("resources/bulletsound.wav");
         explosion.delete();
     }
 

@@ -7,10 +7,16 @@ public class Bullet {
 
     private Picture representation;
     private Shootable[] targets;
+    private volatile boolean exit = false;
+    private volatile boolean exit2 = false;
+    private boolean active;
+
+    public boolean isActive() {
+        return active;
+    }
 
     public Bullet(Shootable shootable) {
         bulletType(shootable);
-
     }
 
     private void bulletType(Shootable shootable) {
@@ -22,39 +28,46 @@ public class Bullet {
             representation = new Picture(shipBulletPosX, shipBulletPosY, "resources/projectile.png");
         }
         if (shootable instanceof Boss) {
-            //changed Y to shoot from the bottom of the character, need to find a better way
             representation = new Picture(centerX, centerY + shootable.getHeight(), "resources/bossprojectile.png");
         }
         if (shootable instanceof Alien) {
             representation = new Picture(centerX, centerY + shootable.getHeight(), "resources/enemyprojectile.png");
         }
         representation.draw();
+        active = true;
     }
+
 
     public void shootUpwards(final Shootable[] shootables) {
         targets = shootables;
         Thread bulletTrajectory = new Thread(new Runnable() {
             public void run() {
-                while (representation.getY() > Field.getPADDING()) {
-                    try {
-                        Thread.sleep(2);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                    representation.translate(0, -1);
-                    for (Shootable target : shootables
-                    ) {
-                        if (target.isActive() && isSamePosUp(target)) {
-                            representation.delete();
-                            target.hit();
-                            return;
+                while (!exit) {
+                    while (representation.getY() > Field.getPADDING()) {
+                        try {
+                            Thread.sleep(2);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
+                        representation.translate(0, -1);
+                        for (Shootable target : shootables
+                        ) {
+                            if (target.isActive() && isSamePosUp(target)) {
+                                representation.delete();
+                                target.hit();
+                                //              Field.playSound("resources/bulletsound.wav");
+                                exit = true;
+                                return;
+                            }
                         }
                     }
+                    exit = true;
+                    representation.delete();
                 }
-                representation.delete();
             }
         });
         bulletTrajectory.start();
+
 
     }
 
@@ -65,29 +78,47 @@ public class Bullet {
     }
 
     private boolean isSamePosDown(Shootable target) {
-        return representation.getY() == target.getY() + target.getHeight()
+        return representation.getY() == target.getY()
                 && representation.getX() + representation.getWidth() <= target.getX() + target.getWidth()
                 && representation.getX() >= target.getX();
     }
 
 
-    public void shootDownwards() {
-
+    public void shootDownwards(final Shootable[] shootables) {
+        exit2=false;
+        targets = shootables;
         representation.draw();
-        Thread t1 = new Thread(new Runnable() {
+        final Thread t1 = new Thread(new Runnable() {
             public void run() {
-                while (representation.getY() + representation.getHeight() < Field.getHEIGHT() - Field.getPADDING()) {
-                    try {
-                        Thread.sleep(8);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
+                while (!exit2) {
+                    while (representation.getY() + representation.getHeight() < Field.getHEIGHT() - Field.getPADDING()) {
+                        try {
+                            Thread.sleep(4);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
+                        for (Shootable target : shootables) {
+                            if (!(target instanceof BadGuys)) {
+                                if (target.isActive() && isSamePosDown(target)) {
+                                    representation.delete();
+                                    target.hit();
+                                    exit2=true;
+                                    return;
+                                }
+                            }
+
+                        }
+                        if (isActive()) {
+                            representation.translate(0, 1);
+                        }
                     }
-                    representation.translate(0, 1);
+                    exit2=true;
+                    representation.delete();
                 }
-                representation.delete();
             }
         });
 
         t1.start();
     }
+
 }

@@ -6,17 +6,18 @@ import org.academiadecodigo.simplegraphics.keyboard.KeyboardEventType;
 import org.academiadecodigo.simplegraphics.keyboard.KeyboardHandler;
 import org.academiadecodigo.simplegraphics.pictures.Picture;
 
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import java.io.File;
 
 public class Field {
+
+    private long lastFire;
+    private long firingInterval = 300;
 
     private static final int WIDTH = 800;
     private static final int HEIGHT = 600;
     private static final int PADDING = 10;
 
-    private static int score;
+    private Picture canvas;
+    private int score;
     private Shootable[] gameObjects;
     private Keyboard keyboard;
     private SpaceShip spaceShip;
@@ -27,20 +28,6 @@ public class Field {
         this.gameLevel = gameLevel;
     }
 
-    /**
-     * Method that uses javax.sound to stream audio and java.io to read from a file
-     *
-     * @param filename
-     */
-    public static void playSound(String filename) {
-        try {
-            Clip clip = AudioSystem.getClip();
-            clip.open(AudioSystem.getAudioInputStream(new File(filename)));
-            clip.start();
-        } catch (Exception exc) {
-            exc.printStackTrace(System.out);
-        }
-    }
 
     public static int getWIDTH() {
         return WIDTH;
@@ -58,15 +45,10 @@ public class Field {
      * Method to initiate the game
      */
     public void init() {
+        AudioPlay backgroundmusic = new AudioPlay();
+        backgroundmusic.backgroundMusic();
 
-        AudioPlay backgroundMusic = new AudioPlay("resources/8bit_Trisco.wav");
-
-        backgroundMusic.runAudio();
-
-
-        //playSound("resources/8bit_Trisco.wav");
-
-        createCanvas();
+        canvas=createCanvas();
 
         userInputHandler.keyboardInit();
 
@@ -81,9 +63,8 @@ public class Field {
     /**
      * Method to create GameCanvas considering each game level
      */
-    private void createCanvas() {
+    private Picture createCanvas() {
         Picture canvas = new Picture(PADDING, PADDING, "resources/canvas/rookiecanvas.png");
-        ;
         switch (gameLevel) {
 
             case INTERMEDIATE:
@@ -97,23 +78,26 @@ public class Field {
                 break;
         }
         canvas.draw();
+        return canvas;
     }
 
     /**
      * Method to check if Boss is Ready to deploy
      */
-    private void bossDeploymentCheck() {
 
+    private void bossDeploymentCheck() {
         if (AlienHorde.bossIsReady(gameObjects)) {
             for (Shootable gameObject : gameObjects
             ) {
                 if (gameObject instanceof Boss) {
                     if (!gameObject.isActive()) {
                         ((Boss) gameObject).activate();
+                        score++;
                     }
                 }
             }
         }
+
     }
 
     /**
@@ -152,9 +136,18 @@ public class Field {
             }
             if (keyboardEvent.getKey() == keyboardEvent.KEY_LEFT) {
                 spaceShip.moveLeft();
+
+               //System.out.println("Number of active threads from the given thread: " + Thread.activeCount());
+                // Map<Thread, StackTraceElement[]> threads = Thread.getAllStackTraces();
+                //  System.out.println(threads.keySet());*/
             }
+
+
             if (keyboardEvent.getKey() == keyboardEvent.KEY_SPACE) {
-                playSound("resources/zap.wav");
+                if (System.currentTimeMillis() - lastFire < firingInterval){
+                    return;
+                }
+                lastFire = System.currentTimeMillis();
                 spaceShip.shoot(gameObjects);
                 bossDeploymentCheck();
             }

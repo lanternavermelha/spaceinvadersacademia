@@ -2,95 +2,17 @@
 <Diagram>
   <ID>JAVA</ID>
   <OriginalElement />
-  <nodes>
-    <node x="122.30824829931973" y="1047.0">Field</node>
-    <node x="0.0" y="222.0">Boss</node>
-    <node x="1208.8082482993198" y="0.0">AlienBlock</node>
-    <node x="996.8082482993198" y="0.0">Bullet</node>
-    <node x="402.97916666666663" y="189.0">Alien</node>
-    <node x="142.30824829931973" y="607.0">Player</node>
-    <node x="124.14498299319726" y="0.0">Character</node>
-    <node x="696.8082482993198" y="0.0">Playground</node>
-    <node x="355.30824829931976" y="542.0">Game</node>
-    <node x="189.30824829931973" y="1697.0">Main</node>
-  </nodes>
+  <nodes />
   <notes />
-  <edges>
-    <edge source="Player" target="Field">
-      <point x="64.0" y="157.5" />
-      <point x="302.30824829931976" y="1027.0" />
-      <point x="288.80824829931976" y="1027.0" />
-      <point x="18.5" y="-300.0" />
-    </edge>
-    <edge source="Player" target="Character">
-      <point x="0.0" y="-157.5" />
-      <point x="238.30824829931973" y="522.0" />
-      <point x="224.125" y="522.0" />
-      <point x="224.125" y="169.0" />
-      <point x="231.4783163265306" y="169.0" />
-      <point x="15.333333333333343" y="69.5" />
-    </edge>
-    <edge source="Player" target="Alien">
-      <point x="64.0" y="-157.5" />
-      <point x="302.30824829931976" y="502.0" />
-      <point x="416.0505952380952" y="502.0" />
-      <point x="-78.42857142857144" y="146.5" />
-    </edge>
-    <edge source="Main" target="Field">
-      <point x="40.5" y="-24.0" />
-      <point x="310.80824829931976" y="1672.0" />
-      <point x="344.30824829931976" y="1672.0" />
-      <point x="74.0" y="300.0" />
-    </edge>
-    <edge source="Boss" target="Character">
-      <point x="45.75" y="-113.5" />
-      <point x="137.25" y="169.0" />
-      <point x="170.14498299319726" y="169.0" />
-      <point x="-46.0" y="69.5" />
-    </edge>
-    <edge source="Field" target="Boss">
-      <point x="-129.5" y="-300.0" />
-      <point x="140.80824829931973" y="1027.0" />
-      <point x="93.44345238095241" y="1027.0" />
-      <point x="93.44345238095241" y="522.0" />
-      <point x="45.75" y="522.0" />
-      <point x="-45.75" y="113.5" />
-    </edge>
-    <edge source="Game" target="Alien">
-      <point x="-86.66666666666669" y="-222.5" />
-      <point x="398.6415816326531" y="522.0" />
-      <point x="468.3363095238095" y="522.0" />
-      <point x="-26.14285714285711" y="146.5" />
-    </edge>
-    <edge source="Field" target="Player">
-      <point x="-55.5" y="-300.0" />
-      <point x="214.80824829931973" y="1007.0" />
-      <point x="174.30824829931973" y="1007.0" />
-      <point x="-64.0" y="157.5" />
-    </edge>
-    <edge source="Field" target="Alien">
-      <point x="129.5" y="-300.0" />
-      <point x="399.80824829931976" y="1027.0" />
-      <point x="636.8082482993198" y="1027.0" />
-      <point x="636.8082482993198" y="502.0" />
-      <point x="572.9077380952381" y="502.0" />
-      <point x="78.4285714285715" y="146.5" />
-    </edge>
-    <edge source="Alien" target="Character">
-      <point x="45.75" y="-146.5" />
-      <point x="540.2291666666666" y="159.0" />
-      <point x="292.811649659864" y="159.0" />
-      <point x="76.66666666666671" y="69.5" />
-    </edge>
-  </edges>
-  <settings layout="Hierarchic Group" zoom="0.542948038176034" x="637.9999999999999" y="342.99999999999994" />
+  <edges />
+  <settings layout="Hierarchic Group" zoom="0.542948038176034" x="638.0" y="343.0" />
   <SelectedNodes />
   <Categories>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+    <Category>Inner Classes</Category>
     <Category>Fields</Category>
     <Category>Constructors</Category>
-    <Category>Properties</Category>
-    <Category>Methods</Category>
-    <Category>Inner Classes</Category>
   </Categories>
   <SCOPE>All</SCOPE>
   <VISIBILITY>private</VISIBILITY>

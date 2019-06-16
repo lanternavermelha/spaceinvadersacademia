@@ -8,43 +8,65 @@ public class Boss extends BadGuys {
     private int hitPoints;
     private boolean active;
     private GameLevel gameLevel;
+    private volatile boolean exit = false;
+    int speed = 0;
 
-    public Boss(int x, int y, GameLevel gameLevel) {//not doing shit with this values!!
+    private void levelSpeed(GameLevel gameLevel) {
 
-        this.gameLevel = gameLevel;
+        switch (gameLevel) {
+            case ROOKIE:
+                speed = 11;
+                break;
+            case INTERMEDIATE:
+                speed = 9;
+                break;
+            case PRO:
+                speed = 6;
+                break;
+            case INSANE:
+                speed = 5;
+                break;
+        }
 
-        hitPoints = 300;
 
-        //TODO better way to randomize position?
+    }
+
+    private void shuffleRepresentation() {
         double ran = Math.random();
         if (ran < .4) {
-            representation = new Picture(200, 100, "resources/super.png");
+            representation = new Picture(200 * ran + 50, 100 * ran + 200, "resources/super.png");
         }
         if (ran >= .4 && ran < .7) {
-            representation = new Picture(400, 100, "resources/super2.png");
+            representation = new Picture(400 * ran + 200, 100 * ran + 150, "resources/super2.png");
         }
         if (ran >= .7) {
-            representation = new Picture(600, 100, "resources/super3.png");
+            representation = new Picture(600 * ran + 100, 100 * ran + 100, "resources/super3.png");
         }
-        //activate();
+    }
+
+    public Boss(GameLevel gameLevel) {//not doing shit with this values!!
+
+        this.gameLevel = gameLevel;
+        shuffleRepresentation();
+        hitPoints = 300;
+        levelSpeed(gameLevel);
+
     }
 
     public void hit() {
         hitPoints -= 50;
-        AudioPlay bossHit = new AudioPlay("resources/bulletsound.wav");
-        bossHit.runAudio();
-
+        Explosion.explode(this);
         if (hitPoints == 0) {
             kill();
             Explosion.explode(this);
-            //return;
+            Explosion.explode(this);
+            Explosion.explode(this);
         }
-        bossHit.stopAudio();
 
-        //Field.playSound("resources/bulletsound.wav");
     }
 
     public void kill() {
+        exit = true;
         active = false;
         representation.delete();
         Explosion.explode(this);
@@ -54,12 +76,14 @@ public class Boss extends BadGuys {
      * Initiate a new Thread to move Bosses
      */
     public void activate() {
+
         if (!active) {
             representation.draw();
             Thread bossMove = new Thread(new Runnable() {
                 public void run() {
-                    while (true) {
+                    while (!exit) {
                         move();
+
                     }
                 }
             });
@@ -76,7 +100,7 @@ public class Boss extends BadGuys {
         //To the right
         while (getX() > Field.getPADDING()) {
             try {
-                Thread.sleep(20);
+                Thread.sleep(speed);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
@@ -85,7 +109,7 @@ public class Boss extends BadGuys {
         //To the left
         while (getX() < Field.getWIDTH() - Field.getPADDING() - getWidth()) {
             try {
-                Thread.sleep(20);
+                Thread.sleep(speed);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
@@ -127,8 +151,17 @@ public class Boss extends BadGuys {
 
     @Override
     public void shoot(Shootable[] shootables) {
-        Bullet bullet = new Bullet(this);
-        bullet.shootDownwards();
+        int probability = (int) Math.floor(Math.random() * 200);
+        if (probability == 1) {
+            System.out.println(probability);
+            if (isActive()) {
+                System.out.println("HE IS ACTIVE");
+                Bullet bullet = new Bullet(this);
+                bullet.shootDownwards(shootables);
+                System.out.println("HE IS ACTIVE");
+            }
+        }
+
     }
 
     @Override

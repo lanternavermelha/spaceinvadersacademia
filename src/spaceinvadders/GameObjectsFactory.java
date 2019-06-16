@@ -65,7 +65,7 @@ public abstract class GameObjectsFactory {
             }
             //spaceinvadders.Boss Creation
             if (i == bossArrayPos) {
-                shootables[i] = new Boss(Field.getWIDTH() / 2, 100, GameLevel.ROOKIE);
+                shootables[i] = new Boss( GameLevel.ROOKIE);
             }
         }
         return shootables;
@@ -115,7 +115,7 @@ public abstract class GameObjectsFactory {
             }
             //spaceinvadders.Boss Creation
             if (i == bossArrayPos) {
-                shootables[i] = new Boss(Field.getWIDTH() / 2, 100, GameLevel.INTERMEDIATE);
+                shootables[i] = new Boss( GameLevel.INTERMEDIATE);
             }
         }
         return shootables;
@@ -164,17 +164,17 @@ public abstract class GameObjectsFactory {
             }
             //spaceinvadders.Boss Creation
             if (i == bossArrayPos) {
-                shootables[i] = new Boss(1, 100, GameLevel.PRO);
+                shootables[i] = new Boss( GameLevel.PRO);
             }
             if (i == bossArrayPos + 1) {
-                shootables[i] = new Boss(0, 100, GameLevel.PRO);
+                shootables[i] = new Boss(GameLevel.PRO);
             }
         }
         return shootables;
     }
 
     /**
-     * Method to create Intermediate Level GameObjects:
+     * Method to create insane Level GameObjects:
      * <p>
      * 20 Aliens / no Protection Blocs / 3 Bosses / 1 Spaceship
      *
@@ -205,7 +205,7 @@ public abstract class GameObjectsFactory {
                 }
             }
             if (i >= bossArrayPos && i <= spaceshipArrayPos - 1) {
-                shootables[i] = new Boss(1, 100, GameLevel.INSANE);
+                shootables[i] = new Boss(GameLevel.INSANE);
             }
         }
         return shootables;

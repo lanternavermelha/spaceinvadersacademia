@@ -22,6 +22,7 @@ public class Alien extends BadGuys {
      * @param x
      * @param y
      */
+
     private void shuffleRepresentation(int x, int y) {
         double ran = Math.random();
         if (ran < .4) {
@@ -43,8 +44,15 @@ public class Alien extends BadGuys {
 
     @Override
     public void shoot(Shootable[] characters) {
-        Bullet bullet = new Bullet(this);
-        bullet.shootDownwards();
+        int probability = (int) Math.floor(Math.random() * 2000);
+        if (probability == 1) {
+            if (isActive()) {
+                System.out.println("Number of active threads from the given thread: " + Thread.activeCount());
+                Bullet bullet = new Bullet(this);
+                bullet.shootDownwards(characters);
+
+            }
+        }
     }
 
     @Override
