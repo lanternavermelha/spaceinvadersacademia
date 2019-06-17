@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_spaceinvadersgroup" default="compile.module.spaceinvadersgroup">
+    <dirname property="module.spaceinvadersgroup.basedir" file="${ant.file.module_spaceinvadersgroup}"/>
+
+    <property name="module.jdk.home.spaceinvadersgroup" value="${project.jdk.home}"/>
+    <property name="module.jdk.bin.spaceinvadersgroup" value="${project.jdk.bin}"/>
+    <property name="module.jdk.classpath.spaceinvadersgroup" value="${project.jdk.classpath}"/>
+
+    <property name="compiler.args.spaceinvadersgroup" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+
+    <property name="spaceinvadersgroup.output.dir"
+              value="${module.spaceinvadersgroup.basedir}/out/production/spaceinvadersgroup"/>
+    <property name="spaceinvadersgroup.testoutput.dir"
+              value="${module.spaceinvadersgroup.basedir}/out/test/spaceinvadersgroup"/>
+
+    <path id="spaceinvadersgroup.module.bootclasspath">
+        <!-- Paths to be included in compilation bootclasspath -->
+    </path>
+
+    <path id="spaceinvadersgroup.module.production.classpath">
+        <path refid="${module.jdk.classpath.spaceinvadersgroup}"/>
+        <pathelement location="${basedir}/lib/simplegraphics.jar"/>
+    </path>
+
+    <path id="spaceinvadersgroup.runtime.production.module.classpath">
+        <pathelement location="${spaceinvadersgroup.output.dir}"/>
+        <pathelement location="${basedir}/lib/simplegraphics.jar"/>
+    </path>
+
+    <path id="spaceinvadersgroup.module.classpath">
+        <path refid="${module.jdk.classpath.spaceinvadersgroup}"/>
+        <pathelement location="${spaceinvadersgroup.output.dir}"/>
+        <pathelement location="${basedir}/lib/simplegraphics.jar"/>
+    </path>
+
+    <path id="spaceinvadersgroup.runtime.module.classpath">
+        <pathelement location="${spaceinvadersgroup.testoutput.dir}"/>
+        <pathelement location="${spaceinvadersgroup.output.dir}"/>
+        <pathelement location="${basedir}/lib/simplegraphics.jar"/>
+    </path>
+
+
+    <patternset id="excluded.from.module.spaceinvadersgroup">
+        <patternset refid="ignored.files"/>
+    </patternset>
+
+    <patternset id="excluded.from.compilation.spaceinvadersgroup">
+        <patternset refid="excluded.from.module.spaceinvadersgroup"/>
+    </patternset>
+
+    <path id="spaceinvadersgroup.module.sourcepath">
+        <dirset dir="${module.spaceinvadersgroup.basedir}">
+            <include name="src"/>
+        </dirset>
+    </path>
+
+
+    <target name="compile.module.spaceinvadersgroup"
+            depends="compile.module.spaceinvadersgroup.production,compile.module.spaceinvadersgroup.tests"
+            description="Compile module spaceinvadersgroup"/>
+
+    <target name="compile.module.spaceinvadersgroup.production" depends="register.custom.compilers"
+            description="Compile module spaceinvadersgroup; production classes">
+        <mkdir dir="${spaceinvadersgroup.output.dir}"/>
+        <javac2 destdir="${spaceinvadersgroup.output.dir}" debug="${compiler.debug}"
+                nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true"
+                executable="${module.jdk.bin.spaceinvadersgroup}/javac">
+            <compilerarg line="${compiler.args.spaceinvadersgroup}"/>
+            <bootclasspath refid="spaceinvadersgroup.module.bootclasspath"/>
+            <classpath refid="spaceinvadersgroup.module.production.classpath"/>
+            <src refid="spaceinvadersgroup.module.sourcepath"/>
+            <patternset refid="excluded.from.compilation.spaceinvadersgroup"/>
+        </javac2>
+
+        <copy todir="${spaceinvadersgroup.output.dir}">
+            <fileset dir="${module.spaceinvadersgroup.basedir}/src">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="compile.module.spaceinvadersgroup.tests"
+            depends="register.custom.compilers,compile.module.spaceinvadersgroup.production"
+            description="compile module spaceinvadersgroup; test classes" unless="skip.tests"/>
+
+    <target name="clean.module.spaceinvadersgroup" description="cleanup module">
+        <delete dir="${spaceinvadersgroup.output.dir}"/>
+        <delete dir="${spaceinvadersgroup.testoutput.dir}"/>
+    </target>
+</project>

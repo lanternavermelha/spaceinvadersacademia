@@ -3,69 +3,99 @@ package spaceinvadders;
 import org.academiadecodigo.simplegraphics.pictures.Picture;
 
 
-public class Alien extends Character {
+public class Alien extends BadGuys {
 
-    private boolean dead;
-    private int speed;
+    private boolean active;
+    private GameLevel gameLevel;
     private Picture representation;
+    private int bulletRate;
+
+    Alien(int x, int y, GameLevel gameLevel) {
+        //TODO switch to change speed and shooting pattern
+        this.gameLevel = gameLevel;
+        shuffleRepresentation(x, y);
+        active = true;
+
+        if (gameLevel == GameLevel.ROOKIE || gameLevel == GameLevel.INTERMEDIATE) {
+            bulletRate = 2;
+        }
+        if (gameLevel == GameLevel.INSANE || gameLevel == GameLevel.PRO) {
+            bulletRate = 3;
+        }
 
 
-
-
-    @Override
-    public int getSpeed() {
-        return speed;
     }
 
-    public Alien(int x, int y, int speed) {
-        this.speed=speed;
+    /**
+     * Method to shuffle the representation of the alien enemies
+     *
+     * @param x
+     * @param y
+     */
+
+    private void shuffleRepresentation(int x, int y) {
         double ran = Math.random();
         if (ran < .4) {
-            representation = new Picture(x, y, "Resources/invaderRed.png");
+            representation = new Picture(x, y, "resources/invaderRed.png");
         }
         if (ran >= .4 && ran < .7) {
-            representation = new Picture(x, y, "Resources/invaderBlue.png");
+            representation = new Picture(x, y, "resources/invaderBlue.png");
         }
         if (ran >= .7) {
-            representation = new Picture(x, y, "Resources/invaderGreen.png");
+            representation = new Picture(x, y, "resources/invaderGreen.png");
         }
         representation.draw();
     }
 
+
+    public GameLevel getGameLevel() {
+        return gameLevel;
+    }
+
     @Override
-    public void shoot() {
-        Bullet bullet = new Bullet(this);
-        bullet.shootDownwards();
+    public void shoot(Shootable[] characters) {
+        int probability = (int) Math.floor(Math.random() * 2000);
+        if (probability > 0 && probability < bulletRate) {
+            if (isActive()) {
+                Bullet bullet = new Bullet(this);
+                bullet.shootDownwards(characters);
+            }
+        }
     }
 
+    @Override
+    public void hit() {
+        kill();
+    }
+
+    @Override
     public void kill() {
-        dead = true;
+        active = false;
         representation.delete();
+        Explosion.explode(this);
     }
 
-    public boolean isDead() {
-        return dead;
+    @Override
+    public boolean isActive() {
+        return active;
     }
 
-    public void moveDown() {
-        representation.translate(0, getSpeed() * 2);
-
+    void moveRight() {
+        representation.translate(1, 0);
     }
 
-    public void moveRight() {
-        representation.translate(getSpeed(), 0);
+
+    void moveLeft() {
+        representation.translate(-1, 0);
     }
 
-    public void moveLeft() {
-        representation.translate(-getSpeed(), 0);
-    }
 
     public int getX() {
         return representation.getX();
     }
 
     public int getY() {
-        return representation.getX();
+        return representation.getY();
     }
 
     public int getWidth() {
@@ -76,9 +106,13 @@ public class Alien extends Character {
         return representation.getHeight();
     }
 
+    void moveDown() {
+        representation.translate(0, getHeight());
+    }
+
     @Override
     public String toString() {
-        return "spaceinvadders.Alien";
+        return "Alien";
     }
 }
 

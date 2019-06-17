@@ -1,71 +1,128 @@
 package spaceinvadders;
 
-import org.academiadecodigo.simplegraphics.graphics.Color;
-import org.academiadecodigo.simplegraphics.graphics.Rectangle;
+import org.academiadecodigo.simplegraphics.pictures.Picture;
 
-import java.io.File;
 
-public class Bullet {
+class Bullet {
 
-    Rectangle representation;
+    private Picture representation;
+    private Shootable[] targets;
+    private volatile boolean exit = false;
+    private volatile boolean exit2 = false;
+    private boolean active;
 
-    public Bullet(Character character) {
-        representation = new Rectangle(character.getX() + (character.getWidth() / 2), character.getY()-character.getHeight()/2, 3, 8);
+    private Shootable shooter;
+
+    Bullet(Shootable shootable) {
+        shooter = shootable;
+        bulletType(shootable);
     }
 
-    public void shootUpwards() {
-        representation.setColor(Color.YELLOW);
-        representation.fill();
+    boolean isActive() {
+        return active;
+    }
 
+    private void bulletType(Shootable shootable) {
+        int shipBulletPosX = shootable.getX() + (shootable.getWidth() / 2);
+        int shipBulletPosY = shootable.getY();
+        int centerX = shootable.getX() + (shootable.getWidth() / 2);
+        int centerY = shootable.getY() - (shootable.getHeight() / 2);
+        if (shootable instanceof SpaceShip) {
+            representation = new Picture(shipBulletPosX, shipBulletPosY, "resources/projectile.png");
+        }
+        if (shootable instanceof Boss) {
+            representation = new Picture(centerX, centerY + shootable.getHeight(), "resources/bossprojectile.png");
+        }
+        if (shootable instanceof Alien) {
+            representation = new Picture(centerX, centerY + shootable.getHeight(), "resources/enemyprojectile.png");
+        }
+        representation.draw();
+        active = true;
+    }
 
-        Thread t1 = new Thread(new Runnable() {
+    void shootUpwards(final Shootable[] shootables) {
+        targets = shootables;
+        Thread bulletTrajectory = new Thread(new Runnable() {
             public void run() {
-                while (representation.getY()> Field.getPADDING()) {
-                    try {
-                        Thread.sleep(5);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
+                while (!exit) {
+                    if (shooter.isActive()) {
+                        exit = true;
                     }
-                    representation.translate(0, -1);
-                    System.out.println(representation.getX());
-                    System.out.println(representation.getY());
+                    while (representation.getY() > Field.getPADDING()) {
+                        try {
+                            Thread.sleep(2);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
+                        representation.translate(0, -1);
+                        for (Shootable target : shootables
+                        ) {
+                            if (target.isActive() && isSamePosUp(target)) {
+                                representation.delete();
+                                target.hit();
+                                exit = true;
+                                return;
+                            }
+                        }
+                    }
+                    exit = true;
+                    representation.delete();
                 }
-                representation.delete();
+            }
+        });
+        bulletTrajectory.start();
+
+
+    }
+
+    private boolean isSamePosUp(Shootable target) {
+        return representation.getY() <= target.getY() + target.getHeight() && representation.getY() >= target.getY()
+                && representation.getX() <= target.getX() + target.getWidth()
+                && representation.getX() >= target.getX();
+    }
+
+    private boolean isSamePosDown(Shootable target) {
+        return representation.getY() == target.getY()
+                && representation.getX() + representation.getWidth() <= target.getX() + target.getWidth()
+                && representation.getX() >= target.getX();
+    }
+
+
+    void shootDownwards(final Shootable[] shootables) {
+        exit2=false;
+        targets = shootables;
+        representation.draw();
+        final Thread t1 = new Thread(new Runnable() {
+            public void run() {
+                while (!exit2) {
+                    while (representation.getY() + representation.getHeight() < Field.getHEIGHT() - Field.getPADDING()) {
+                        try {
+                            Thread.sleep(4);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
+                        for (Shootable target : shootables) {
+                            if (!(target instanceof BadGuys)) {
+                                if (target.isActive() && isSamePosUp(target)) {
+                                    representation.delete();
+                                    target.hit();
+                                    exit2=true;
+                                    return;
+                                }
+                            }
+
+                        }
+                        if (isActive()) {
+                            representation.translate(0, 1);
+                        }
+                    }
+                    exit2=true;
+                    representation.delete();
+                }
             }
         });
 
         t1.start();
-    }
-    public void shootDownwards() {
-        representation.setColor(Color.YELLOW);
-        representation.fill();
-
-        Thread t1 = new Thread(new Runnable() {
-            public void run() {
-                while (representation.getY()+representation.getHeight()<Field.getHEIGHT()-Field.getPADDING()) {
-                    try {
-                        Thread.sleep(8);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                    representation.translate(0, 1);
-                    System.out.println(representation.getX());
-                    System.out.println(representation.getY());
-                }
-                representation.delete();
-            }
-        });
-
-        t1.start();
-    }
-
-    public int getX() {
-        return representation.getX();
-    }
-
-
-    public int getY() {
-        return representation.getY();
     }
 
 }

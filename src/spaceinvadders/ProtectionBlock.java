@@ -2,52 +2,42 @@ package spaceinvadders;
 
 import org.academiadecodigo.simplegraphics.pictures.Picture;
 
-public class ProtectionBlock extends Character {
-    private int hitpoints;
-    Picture representation;
+public class ProtectionBlock implements Shootable {
 
-    //TODO -- y and speed are not needed in this class!
-    public ProtectionBlock(int x, int y, int speed) {
-        hitpoints = 300;
-        representation = new Picture(x, 450, "/Users/albertoreis/dev/spaceinvadersgroup/resources/laserGreen.png");
+    private int hitPoints;
+    private Picture representation;
+    private boolean active;
+    private int positionY;
+
+    public ProtectionBlock(int x) {
+        positionY = 450;
+        hitPoints = 300;
+        representation = new Picture(x, positionY, "resources/laserGreen.png");
         representation.draw();
+        active = true;
     }
 
     public void hit() {
-        hitpoints -= 50;
+
+
+        hitPoints -= 50;
+        if (hitPoints == 0) {
+            kill();
+        }
+
 
         changeRepresentation();
+
+
     }
 
-    public void changeRepresentation() {
-        if (hitpoints == 200) {
-            representation.delete();
-            representation = new Picture(getX(), 450, "/Users/albertoreis/dev/spaceinvadersgroup/resources/laserOrange.png");
-            representation.draw();
+    private void changeRepresentation() {
+        if (hitPoints == 200) {
+            representation.load("resources/laserOrange.png");
         }
-        if (hitpoints == 100) {
-            representation.delete();
-            representation = new Picture(getX(), 450, "/Users/albertoreis/dev/spaceinvadersgroup/resources/laserRed.png");
-            representation.draw();
+        if (hitPoints == 100) {
+            representation.load("resources/laserRed.png");
         }
-    }
-
-
-    @Override
-    public void shoot() {
-//TODO this object does not shoot--must think a better way to not implement this
-    }
-
-    @Override
-    public int getSpeed() {
-        return 0;
-    }
-
-
-
-    @Override
-    public boolean isDead() {
-        return hitpoints <= 0;
     }
 
     @Override
@@ -72,14 +62,18 @@ public class ProtectionBlock extends Character {
 
     @Override
     public void kill() {
-        //TODO -- kill it
+        active = false;
         representation.delete();
     }
+
+    @Override
+    public boolean isActive() {
+        return active;
+    }
+
     @Override
     public String toString() {
         return "ProtectionBlock";
     }
-
-
 
 }

@@ -1,30 +1,15 @@
 package spaceinvadders;
 
-import org.academiadecodigo.simplegraphics.graphics.Color;
-import org.academiadecodigo.simplegraphics.graphics.Rectangle;
 import org.academiadecodigo.simplegraphics.pictures.Picture;
 
-public class SpaceShip extends Character {
-//spaceinvadders.SpaceShip -- changed atributes to private, getx and GetY, getwidht getheight
+public class SpaceShip implements Shootable {
 
-    private boolean dead;
+    private boolean active;
     private Picture ship;
-    private Rectangle bullet;
-    private int speed;
-    private int playerLevel;
+    private GameLevel gameLevel;
 
-    @Override
-    public int getSpeed() {
-        return speed;
-    }
 
-    private int aliensKilled;
-
-    public SpaceShip(int x, int y, int speed) {
-        ship = new Picture(Field.getWIDTH() / 2, Field.getHEIGHT() - 100, "Resources/ship.png");
-        ship.draw();
-        this.speed = 10;//speed;
-    }
+    private Field field;
 
     public int getX() {
         return ship.getX();
@@ -42,94 +27,70 @@ public class SpaceShip extends Character {
         return ship.getHeight();
     }
 
-    @Override
-    public void shoot() {
-        Bullet bullet = new Bullet(this);
-        bullet.shootUpwards();
+
+    SpaceShip(GameLevel gameLevel) {
+        ship = new Picture(Field.getWIDTH() / 2, Field.getHEIGHT() - 100, "resources/ship.png");
+        ship.draw();
+        active = true;
+        this.gameLevel = gameLevel;
     }
 
-
-    public void moveDown() {
-        ship.translate(0, 20);
-    }
-
-    public void moveUp() {
-        // representation.translate(0, -20);
-    }
-
-    public int getPlayerLevel() {
-        return playerLevel;
-    }
-
-    public int getAliensKilled() {
-        return aliensKilled;
-    }
-
-    public void moveRight() {
+    void moveRight() {
         if (getX() + getWidth() < Field.getWIDTH()) {
-            ship.translate(speed, 0);
-        }
-    }
-
-    public void moveLeft() {
-        if (getX() > Field.getPADDING()) {
-            ship.translate(-speed, 0);
-        }
-
-    }
-
-    public boolean hitCheckerNOARRAY(Character character) {
-        boolean result = false;
-        if (!character.isDead()) {
-            if (bullet.getY() == character.getY() + character.getHeight()
-                    //To get the bottom of the figure
-                    || bullet.getX() <= character.getX() + character.getWidth()
-                    && bullet.getX() >= character.getX()) {
-                character.kill();
-                result = true;
-                if (character instanceof Alien) {
-                    aliensKilled++;
-                }
-                // System.out.println("I killed: " + aliensKilled);
-                playerLevel++;
+            if (gameLevel == GameLevel.ROOKIE || gameLevel == GameLevel.INTERMEDIATE) {
+                ship.translate(10, 0);
+            } else {
+                ship.translate(20, 0);
             }
         }
-        return result;
+    }
+
+    void moveLeft() {
+
+        if (getX() > Field.getPADDING()) {
+            if (gameLevel == GameLevel.ROOKIE || gameLevel == GameLevel.INTERMEDIATE) {
+                ship.translate(-10, 0);
+            } else {
+                ship.translate(-20, 0);
+            }
+        }
     }
 
     @Override
-    public boolean isDead() {
-        return dead;
+    public void hit() {
+        kill();
+        Explosion.explode(this);
+        active = false;
+    }
+
+    void shoot(Shootable[] gameobjects) {
+        if (isActive()) {
+            Bullet bullet = new Bullet(this);
+            bullet.shootUpwards(gameobjects);
+        }
+
+    }
+
+    void gimmeField(Field field) {
+        this.field = field;
+
+    }
+    @Override
+    public boolean isActive() {
+        return active;
     }
 
     @Override
     public void kill() {
         ship.delete();
-        dead = true;
-    }
+        active = false;
+        Explosion.explode(this);
+        field.setGameOver();
 
-    public void hitChecker(Character[] aliens) {
-        for (int i = aliens.length - 1; i >= 0; i--) {
-            if (!aliens[i].isDead()) {
-                if (bullet.getY() == aliens[i].getY() + aliens[i].getHeight()//To get the bottom of the figure
-                        || bullet.getX() <= aliens[i].getX() + aliens[i].getWidth()
-                        && bullet.getX() >= aliens[i].getX()) {
-                    aliens[i].kill();
-                    //  System.out.println("alien " + i + " is dead");
-                    aliensKilled++;
-                    // System.out.println("I killed: " + aliensKilled);
-                    if (aliensKilled == aliens.length) {
-                        playerLevel++;
-                        //   System.out.println("Level up! " + playerLevel);
-                    }
-                    break;
-                }
-            }
-        }
     }
 
     @Override
     public String toString() {
-        return "spaceinvadders.SpaceShip";
+        return "SpaceShip";
     }
 }
